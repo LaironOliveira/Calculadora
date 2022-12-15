@@ -6,7 +6,7 @@ namespace Calculadora
 {
     public partial class Frm_calc : Form
     {
-        //
+        //teste
         //Variável responsável para que após ocorrer um botão de operação matemática ter o evento click acionado
         //o próximo número digitado sobreescreva o número na label de resultado, para evitar que os números de
         //operações anteriores se acumulem
