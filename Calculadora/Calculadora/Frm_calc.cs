@@ -932,11 +932,18 @@ namespace Calculadora
             else
             {
                 valor1 = double.Parse(Lbl_resultado.Text);
-                double result = 1 / valor1;
-                Lbl_calculando.Text = "1/(" + valor1.ToString() + ")";
-                Lbl_resultado.Text = result.ToString();
-                sub = true;
-                tipoOperacao = "FRACAO";
+                if (valor1 != 0)
+                {
+                    double result = 1 / valor1;
+                    Lbl_calculando.Text = "1/(" + valor1.ToString() + ")";
+                    Lbl_resultado.Text = result.ToString();
+                    sub = true;
+                    tipoOperacao = "FRACAO";
+                }
+                else
+                {
+                    MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }            
         }
 
