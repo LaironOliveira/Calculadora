@@ -646,6 +646,8 @@ namespace Calculadora
                 tipoOperacao = "";
             }
         }
+
+        //Função de Cálculo
         public double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
         {
             double valor1;
