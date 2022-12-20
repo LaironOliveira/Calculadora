@@ -6,27 +6,16 @@ namespace Calculadora
 {
     public partial class Frm_calc : Form
     {
+        bool sub = false;
         //Variável responsável para que após ocorrer um botão de operação matemática ter o evento click acionado
         //o próximo número digitado sobreescreva o número na label de resultado, para evitar que os números de
-        //operações anteriores se acumulem
-        //
-        bool sub = false;
-        //
-        //Valores que são utilizados para os cálculo
-        //
-        double valor1 = 0, valor2 = 0;
-        //
-        //Variável responsávle pela definição do tipo de cálculo
-        //
+        //operações anteriores se acumulem.
+
         string tipoOperacao = "";
-        //
-        //Variável responsável por identificar se existe uma operação anterior pendente ao clicar em outra operação antes de clicar no botão igual(=).
-        //
-        bool valida=false;
-        //
-        //Variável responsável pela identificação de erros
-        //
-        bool error = false;
+        //Variável responsávle pela definição do tipo de cálculo.
+
+        bool n1, n2, n3, n4, n5, n6, n7, n8, n9, n0 = false;
+        //Variáveis responsáveis por identificar quais botões foram pressionados.
 
         public Frm_calc()
         {
@@ -179,14 +168,14 @@ namespace Calculadora
             //Verifica se os números da label resultado são positivos, caso sim, adiciona o sinal
             //de negativo. Caso sejam negativos, remove o sinal de negativo.
             //
-            double calc = double.Parse(Lbl_resultado.Text);
-            if (calc > 0)
+            double num = double.Parse(Lbl_resultado.Text);
+            if (num > 0)
             {
-                Lbl_resultado.Text = "-" + calc;
+                Lbl_resultado.Text = "-" + num;
             }
             else
             {
-                Lbl_resultado.Text = calc.ToString().Replace('-', ' ').Trim();
+                Lbl_resultado.Text = num.ToString().Replace('-', ' ').Trim();
             }
         }
 
@@ -200,8 +189,6 @@ namespace Calculadora
             Lbl_resultado.Text = "0";
             Lbl_calculando.Text = " ";
             sub = false;
-            valor1 = 0; 
-            valor2 = 0;
             tipoOperacao = "";
         }
 
@@ -236,100 +223,27 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "ADICAO")
+            else if (tipoOperacao != "ADICAO" && tipoOperacao != "")
             {
-                double resultado;
-                switch (tipoOperacao)
-                {
-                    case "SUBTRACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim()); 
-                        resultado = valor2 - valor1;
-                        Lbl_calculando.Text = resultado.ToString()+" + ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "MULTIPLICACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 * valor1;
-                        Lbl_calculando.Text = resultado.ToString()+" + ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "DIVISAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        if (valor1 == 0 || valor2 == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        else
-                        {
-                            resultado = valor2 / valor1;
-                            Lbl_calculando.Text = resultado.ToString() + " + ";
-                            sub = true;
-                            valida = true;
-                        }
-                        break;
-                    case "RAIZ":
-                        if (double.Parse(Lbl_resultado.Text) < 0)
-                        {
-                            MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
-                        resultado = Math.Round(Math.Sqrt(valor1), 2);
-                        Lbl_calculando.Text = resultado.ToString()+ " + ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "POTENCIA":
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
-                        resultado = Math.Round(Math.Pow(valor1, 2), 2);
-                        Lbl_calculando.Text = resultado.ToString()+" + ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "FRACAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
-                        resultado = 1 / valor1;
-                        Lbl_calculando.Text = resultado.ToString()+" + ";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
-                tipoOperacao = "";
-                error = false;
-            }
-            else if (valida == true)
-            {
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = Lbl_resultado.Text + " + ";
+                Lbl_resultado.Text = resultado.ToString();
+                sub = true;
                 tipoOperacao = "ADICAO";
-                valida = false;
             }
             else if (Lbl_calculando.Text == " ")
             {
-                valor1 = double.Parse(Lbl_resultado.Text);
-                valor2 = 0;
-                double result = valor1 + valor2;
-                Lbl_calculando.Text = result.ToString() + " + ";
-                sub = true;
                 tipoOperacao = "ADICAO";
+                Lbl_calculando.Text = "0 + ";
+                double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = result.ToString() + " + ";
+                sub = true;               
             }
             else
             {
-                valor1 = double.Parse(Lbl_resultado.Text);
-                valor2 = double.Parse(Lbl_calculando.Text.Replace('+', ' ').Trim());
-                double result = valor1 + valor2;
+                double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                 Lbl_calculando.Text = result.ToString() + " + ";
                 sub = true;
-                tipoOperacao = "ADICAO";
             }                            
         }
         private void Btn_subtracao_Click(object sender, EventArgs e)
@@ -338,102 +252,27 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "SUBTRACAO")
+            else if (tipoOperacao != "SUBTRACAO" && tipoOperacao != "")
             {
-                double resultado;
-                switch (tipoOperacao)
-                {
-                    case "ADICAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        valor2 = double.Parse(Lbl_resultado.Text);
-                        resultado = valor1 + valor2;
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "MULTIPLICACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 * valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "DIVISAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        if (valor1 == 0 || valor2 == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        else
-                        {
-                            resultado = valor2 / valor1;
-                            Lbl_calculando.Text = resultado.ToString() + " - ";
-                            sub = true;
-                            valida = true;
-                        }
-                        break;
-                    case "RAIZ":
-                        if (double.Parse(Lbl_resultado.Text) < 0)
-                        {
-                            MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
-                        resultado = Math.Round(Math.Sqrt(valor1), 2);
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "POTENCIA":
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
-                        resultado = Math.Round(Math.Pow(valor1, 2), 2);
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "FRACAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
-                        resultado = 1 / valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
-                tipoOperacao = "";
-                error = false;
-            }
-            else if (valida == true)
-            {
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = Lbl_resultado.Text + " - ";
+                Lbl_resultado.Text = resultado.ToString();
+                sub = true;
                 tipoOperacao = "SUBTRACAO";
-                valida = false;
             }
             else if (Lbl_calculando.Text == " ")
             {
-                double result;
-                valor1 = double.Parse(Lbl_resultado.Text);
-                valor2 = 0;
-                result = valor1 - valor2;
+                tipoOperacao = "SUBTRACAO";
+                Lbl_calculando.Text = "0 - ";
+                double result = Calcular(Lbl_resultado.Text, Lbl_calculando.Text, tipoOperacao);
                 Lbl_calculando.Text = result.ToString() + " - ";
                 sub = true;
-                tipoOperacao = "SUBTRACAO";
             }
             else
             {
-                double result;
-                valor1 = double.Parse(Lbl_resultado.Text);
-                valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length-2), 2).Trim());
-                result = valor2 - valor1;
+                double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                 Lbl_calculando.Text = result.ToString() + " - ";
                 sub = true;
-                tipoOperacao = "SUBTRACAO";
             }
         }
 
@@ -443,100 +282,27 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "MULTIPLICACAO")
+            else if (tipoOperacao != "MULTIPLICACAO"  && tipoOperacao != "")
             {
-                double resultado;
-                switch (tipoOperacao)
-                {
-                    case "ADICAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        valor2 = double.Parse(Lbl_resultado.Text);
-                        resultado = valor1 + valor2;
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "SUBTRACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 - valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "DIVISAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        if(valor1 == 0 || valor2 == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        else
-                        {
-                            resultado = valor2 / valor1;
-                            Lbl_calculando.Text = resultado.ToString() + " x ";
-                            sub = true;
-                            valida = true;
-                        }                   
-                        break;
-                    case "RAIZ":
-                        if (double.Parse(Lbl_resultado.Text) < 0)
-                        {
-                            MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
-                        resultado = Math.Round(Math.Sqrt(valor1), 2);
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "POTENCIA":
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
-                        resultado = Math.Round(Math.Pow(valor1, 2), 2);
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "FRACAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
-                        resultado = 1 / valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
-                tipoOperacao = "";
-                error = false;
-            }
-            else if (valida == true)
-            {
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = Lbl_resultado.Text + " - ";
+                Lbl_resultado.Text = resultado.ToString();
+                sub = true;
                 tipoOperacao = "MULTIPLICACAO";
-                valida = false;
             }
             else if (Lbl_calculando.Text == " ")
             {
-                valor1 = double.Parse(Lbl_resultado.Text);
-                valor2 = 1;
-                double result = valor2 * valor1;
+                tipoOperacao = "MULTIPLICACAO";
+                Lbl_calculando.Text = "1 x ";
+                double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                 Lbl_calculando.Text = result.ToString() + " x ";
                 sub = true;
-                tipoOperacao = "MULTIPLICACAO";
             }
             else
             {
-                valor1 = double.Parse(Lbl_resultado.Text);
-                valor2 = double.Parse(Lbl_calculando.Text.Replace('x', ' ').Trim());
-                double result = valor2 * valor1;
+                double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                 Lbl_calculando.Text = result.ToString() + " x ";
                 sub = true;
-                tipoOperacao = "MULTIPLICACAO";
             }
         }
 
@@ -546,105 +312,58 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "DIVISAO")
+            else if (tipoOperacao != "DIVISAO" && tipoOperacao != "")
             {
-                double resultado;
-                switch (tipoOperacao)
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                if(resultado != 0)
                 {
-                    case "ADICAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        valor2 = double.Parse(Lbl_resultado.Text);
-                        resultado = valor1 + valor2;
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "SUBTRACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 - valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "MULTIPLICACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 * valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "RAIZ":
-                        if (double.Parse(Lbl_resultado.Text) < 0)
-                        {
-                            MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
-                        resultado = Math.Round(Math.Sqrt(valor1), 2);
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "POTENCIA":
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
-                        resultado = Math.Round(Math.Pow(valor1, 2), 2);
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "FRACAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
-                        resultado = 1 / valor1;
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
-                tipoOperacao = "";
-                error = false;
-            }
-            else if (valida == true)
-            {
-                tipoOperacao = "DIVISAO";
-                valida = false;
-            }
-            else if (Lbl_calculando.Text == " ")
-            {
-                if(Lbl_resultado.Text=="0")
-                {
-                    MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    sub = true;
+                    tipoOperacao = "DIVISAO";
                 }
                 else
                 {
-                    valor1 = double.Parse(Lbl_resultado.Text);
-                    valor2 = valor1 * valor1;
-                    double result = valor2 / valor1;
-                    Lbl_calculando.Text = result.ToString() + " ÷ ";
+                    Lbl_calculando.Text = " ";
+                    Lbl_resultado.Text = "0";
                     sub = true;
-                    tipoOperacao = "DIVISAO";
+                    tipoOperacao = "";
+                }
+            }
+            else if (Lbl_calculando.Text == " ")
+            {
+                tipoOperacao = "DIVISAO";
+                if(Lbl_resultado.Text != "0")
+                {
+                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                    Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    sub = true;
+                }
+                else
+                {
+                    Lbl_calculando.Text = " ";
+                    Lbl_resultado.Text = "0";
+                    sub = true;
+                    tipoOperacao = "";
                 }
             }
             else
             {
-                if(Lbl_calculando.Text == "0 ÷ " || Lbl_resultado.Text == "0")
+                tipoOperacao = "DIVISAO";
+                if(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length-2), 2).Trim() != "0" && Lbl_resultado.Text != "0")
                 {
-                    MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                    Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    sub = true;
                 }
                 else
                 {
-                    valor1 = double.Parse(Lbl_resultado.Text);
-                    valor2 = double.Parse(Lbl_calculando.Text.Replace('÷', ' ').Trim());
-                    double result = valor2 / valor1;
-                    Lbl_calculando.Text = result.ToString() + " ÷ ";
+                    Lbl_calculando.Text = " ";
+                    Lbl_resultado.Text = "0";
                     sub = true;
-                    tipoOperacao = "DIVISAO";
+                    tipoOperacao = "";
                 }
             }          
         }
@@ -655,79 +374,16 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "RAIZ")
+            else if (tipoOperacao != "RAIZ" && tipoOperacao != "")
             {
-                double resultado;
-                switch (tipoOperacao)
-                {
-                    case "ADICAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        valor2 = double.Parse(Lbl_resultado.Text);
-                        resultado = valor1 + valor2;
-                        Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "SUBTRACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 - valor1;
-                        Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "MULTIPLICACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 * valor1;
-                        Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "DIVISAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        if (valor1 == 0 || valor2 == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        else
-                        {
-                            resultado = valor2 / valor1;
-                            Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                            sub = true;
-                            valida = true;
-                        }
-                        break;
-                    case "POTENCIA":
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
-                        resultado = Math.Round(Math.Pow(valor1, 2), 2);
-                        Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "FRACAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
-                        resultado = 1 / valor1;
-                        Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
+                //Arruma um jeito disso daqui pegar - Compara com a calc do windows
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
+                Lbl_resultado.Text = resultado.ToString();
+                sub = true;
                 tipoOperacao = "";
-                error = false;
             }
-            else if (valida == true)
-            {
-                tipoOperacao = "RAIZ";
-                valida = false;
-            }
+            //Isso aqui já tá certo
             else
             {
                 if (double.Parse(Lbl_resultado.Text) < 0)
@@ -739,212 +395,210 @@ namespace Calculadora
                 }
                 else
                 {
-                    valor1 = double.Parse(Lbl_resultado.Text);
-                    double result = Math.Round(Math.Sqrt(valor1), 2);
-                    Lbl_calculando.Text = "sqrt(" + valor1.ToString() + ")";
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
                     tipoOperacao = "RAIZ";
+                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                    Lbl_calculando.Text = "sqrt(" + resultado + ")";
+                    sub = true;
                 }               
             }
         }
 
         private void Btn_elevar_quadrado_Click(object sender, EventArgs e)
         {
-            if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
-            {
-                Lbl_calculando.Text = " ";
-            }
-            else if (tipoOperacao != "POTENCIA")
-            {
-                double resultado;
-                switch (tipoOperacao)
-                {
-                    case "ADICAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        valor2 = double.Parse(Lbl_resultado.Text);
-                        resultado = valor1 + valor2;
-                        Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "SUBTRACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 - valor1;
-                        Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "MULTIPLICACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 * valor1;
-                        Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "DIVISAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        if (valor1 == 0 || valor2 == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        else
-                        {
-                            resultado = valor2 / valor1;
-                            Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
-                            sub = true;
-                            valida = true;
-                        }
-                        break;
-                    case "RAIZ":
-                        if (double.Parse(Lbl_resultado.Text) < 0)
-                        {
-                            MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
-                        resultado = Math.Round(Math.Sqrt(valor1), 2);
-                        Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "FRACAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
-                        resultado = 1 / valor1;
-                        Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
-                tipoOperacao = "";
-                error = false;
-            }
-            else if (valida == true)
-            {
-                tipoOperacao = "POTENCIA";
-                valida = false;
-            }
-            else
-            {
-                valor1 = double.Parse(Lbl_resultado.Text);
-                double result = Math.Round(Math.Pow(valor1, 2), 2);
-                Lbl_calculando.Text = "sqr(" + valor1.ToString() + ")";
-                Lbl_resultado.Text = result.ToString();
-                sub = true;
-                tipoOperacao = "POTENCIA";
-            }    
+        //    if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
+        //    {
+        //        Lbl_calculando.Text = " ";
+        //    }
+        //    else if (tipoOperacao != "POTENCIA")
+        //    {
+        //        double resultado;
+        //        switch (tipoOperacao)
+        //        {
+        //            case "ADICAO":
+        //                valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+        //                valor2 = double.Parse(Lbl_resultado.Text);
+        //                resultado = valor1 + valor2;
+        //                Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
+        //                sub = true;
+        //                valida = true;
+        //                break;
+        //            case "SUBTRACAO":
+        //                valor1 = double.Parse(Lbl_resultado.Text);
+        //                valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+        //                resultado = valor2 - valor1;
+        //                Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
+        //                sub = true;
+        //                valida = true;
+        //                break;
+        //            case "MULTIPLICACAO":
+        //                valor1 = double.Parse(Lbl_resultado.Text);
+        //                valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+        //                resultado = valor2 * valor1;
+        //                Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
+        //                sub = true;
+        //                valida = true;
+        //                break;
+        //            case "DIVISAO":
+        //                valor1 = double.Parse(Lbl_resultado.Text);
+        //                valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+        //                if (valor1 == 0 || valor2 == 0)
+        //                {
+        //                    MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //                    error = true;
+        //                }
+        //                else
+        //                {
+        //                    resultado = valor2 / valor1;
+        //                    Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
+        //                    sub = true;
+        //                    valida = true;
+        //                }
+        //                break;
+        //            case "RAIZ":
+        //                if (double.Parse(Lbl_resultado.Text) < 0)
+        //                {
+        //                    MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //                    error = true;
+        //                }
+        //                valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
+        //                resultado = Math.Round(Math.Sqrt(valor1), 2);
+        //                Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
+        //                sub = true;
+        //                valida = true;
+        //                break;
+        //            case "FRACAO":
+        //                valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')', ' ').Trim());
+        //                resultado = 1 / valor1;
+        //                Lbl_calculando.Text = "sqr(" + resultado.ToString() + ")";
+        //                sub = true;
+        //                valida = true;
+        //                break;
+        //        }
+        //    }
+        //    if (error == true)
+        //    {
+        //        Lbl_resultado.Text = "0";
+        //        Lbl_calculando.Text = " ";
+        //        tipoOperacao = "";
+        //        error = false;
+        //    }
+        //    else if (valida == true)
+        //    {
+        //        tipoOperacao = "POTENCIA";
+        //        valida = false;
+        //    }
+        //    else
+        //    {
+        //        valor1 = double.Parse(Lbl_resultado.Text);
+        //        double result = Math.Round(Math.Pow(valor1, 2), 2);
+        //        Lbl_calculando.Text = "sqr(" + valor1.ToString() + ")";
+        //        Lbl_resultado.Text = result.ToString();
+        //        sub = true;
+        //        tipoOperacao = "POTENCIA";
+        //    }    
         }
 
         private void Btn_fracao_Click(object sender, EventArgs e)
         {
-            if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
-            {
-                Lbl_calculando.Text = " ";
-            }
-            else if (tipoOperacao != "FRACAO")
-            {
-                double resultado;
-                switch (tipoOperacao)
-                {
-                    case "ADICAO":
-                        valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        valor2 = double.Parse(Lbl_resultado.Text);
-                        resultado = valor1 + valor2;
-                        Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "SUBTRACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 - valor1;
-                        Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "MULTIPLICACAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        resultado = valor2 * valor1;
-                        Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "DIVISAO":
-                        valor1 = double.Parse(Lbl_resultado.Text);
-                        valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                        if (valor1 == 0 || valor2 == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        else
-                        {
-                            resultado = valor2 / valor1;
-                            Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
-                            sub = true;
-                            valida = true;
-                        }
-                        break;
-                    case "RAIZ":
-                        if (double.Parse(Lbl_resultado.Text) < 0)
-                        {
-                            MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            error = true;
-                        }
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
-                        resultado = Math.Round(Math.Sqrt(valor1), 2);
-                        Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                    case "POTENCIA":
-                        valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
-                        resultado = Math.Round(Math.Pow(valor1, 2), 2);
-                        Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
-                        sub = true;
-                        valida = true;
-                        break;
-                }
-            }
-            if (error == true)
-            {
-                Lbl_resultado.Text = "0";
-                Lbl_calculando.Text = " ";
-                tipoOperacao = "";
-                error = false;
-            }
-            else if (valida == true)
-            {
-                tipoOperacao = "FRACAO";
-                valida = false;
-            }
+            //if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
+            //{
+            //    Lbl_calculando.Text = " ";
+            //}
+            //else if (tipoOperacao != "FRACAO")
+            //{
+            //    double resultado;
+            //    switch (tipoOperacao)
+            //    {
+            //        case "ADICAO":
+            //            valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+            //            valor2 = double.Parse(Lbl_resultado.Text);
+            //            resultado = valor1 + valor2;
+            //            Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
+            //            sub = true;
+            //            valida = true;
+            //            break;
+            //        case "SUBTRACAO":
+            //            valor1 = double.Parse(Lbl_resultado.Text);
+            //            valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+            //            resultado = valor2 - valor1;
+            //            Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
+            //            sub = true;
+            //            valida = true;
+            //            break;
+            //        case "MULTIPLICACAO":
+            //            valor1 = double.Parse(Lbl_resultado.Text);
+            //            valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+            //            resultado = valor2 * valor1;
+            //            Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
+            //            sub = true;
+            //            valida = true;
+            //            break;
+            //        case "DIVISAO":
+            //            valor1 = double.Parse(Lbl_resultado.Text);
+            //            valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+            //            if (valor1 == 0 || valor2 == 0)
+            //            {
+            //                MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //                error = true;
+            //            }
+            //            else
+            //            {
+            //                resultado = valor2 / valor1;
+            //                Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
+            //                sub = true;
+            //                valida = true;
+            //            }
+            //            break;
+            //        case "RAIZ":
+            //            if (double.Parse(Lbl_resultado.Text) < 0)
+            //            {
+            //                MessageBox.Show("Resultado indefinido", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //                error = true;
+            //            }
+            //            valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());//16
+            //            resultado = Math.Round(Math.Sqrt(valor1), 2);
+            //            Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
+            //            sub = true;
+            //            valida = true;
+            //            break;
+            //        case "POTENCIA":
+            //            valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim()); //2
+            //            resultado = Math.Round(Math.Pow(valor1, 2), 2);
+            //            Lbl_calculando.Text = "1/(" + resultado.ToString() + ")";
+            //            sub = true;
+            //            valida = true;
+            //            break;
+            //    }
+            //}
+            //if (error == true)
+            //{
+            //    Lbl_resultado.Text = "0";
+            //    Lbl_calculando.Text = " ";
+            //    tipoOperacao = "";
+            //    error = false;
+            //}
+            //else if (valida == true)
+            //{
+            //    tipoOperacao = "FRACAO";
+            //    valida = false;
+            //}
             
-            else
-            {
-                valor1 = double.Parse(Lbl_resultado.Text);
-                if (valor1 != 0)
-                {
-                    double result = 1 / valor1;
-                    Lbl_calculando.Text = "1/(" + valor1.ToString() + ")";
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "FRACAO";
-                }
-                else
-                {
-                    MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }            
+            //else
+            //{
+            //    valor1 = double.Parse(Lbl_resultado.Text);
+            //    if (valor1 != 0)
+            //    {
+            //        double result = 1 / valor1;
+            //        Lbl_calculando.Text = "1/(" + valor1.ToString() + ")";
+            //        Lbl_resultado.Text = result.ToString();
+            //        sub = true;
+            //        tipoOperacao = "FRACAO";
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //}            
         }
 
         private void Btn_porcentagem_Click(object sender, EventArgs e)
@@ -953,98 +607,96 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (Lbl_calculando.Text == " "||tipoOperacao=="FRACAO"||tipoOperacao=="RAIZ"||tipoOperacao=="POTENCIA")
+            else if (Lbl_calculando.Text != " " && tipoOperacao != "FRACAO" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
+            {
+                double valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
+                double valor2 = double.Parse(Lbl_resultado.Text);
+                double result = valor1 * (valor2 / 100);
+                Lbl_resultado.Text = result.ToString();
+                sub = true;               
+            }
+            else
             {
                 Lbl_calculando.Text = " ";
                 Lbl_resultado.Text = "0";
                 tipoOperacao = "";
             }
-            else
-            {
-                valor1 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                valor2 = double.Parse(Lbl_resultado.Text);
-                double result = valor1 * (valor2 / 100);
-                Lbl_resultado.Text = result.ToString();
-                sub = true;
-            }
         }
 
         private void Btn_resultado_Click(object sender, EventArgs e)
         {
-            double result;
-            valor1 = double.Parse(Lbl_resultado.Text);
-
-            switch (tipoOperacao)
-            {                
+            if(tipoOperacao == "")
+            {
+                Lbl_calculando.Text += Lbl_resultado.Text + " =";
+                sub = true;
+                tipoOperacao = "";
+            }
+            else if(tipoOperacao == "RAIZ" || tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA")
+            {
+                Lbl_calculando.Text += " =";
+                sub = true;
+                tipoOperacao = "";
+            }
+            else
+            {
+                double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text += Lbl_resultado.Text + " =";
+                Lbl_resultado.Text = result.ToString();
+                sub = true;
+                tipoOperacao = "";
+            }
+        }
+        public double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
+        {
+            double valor1;
+            double valor2;
+            double resultado;
+            switch (operacao)
+            {
                 case "ADICAO":
-                    valor2 = double.Parse(Lbl_calculando.Text.Replace('+', ' ').Trim());
-                    Lbl_calculando.Text += valor1.ToString() + " =";
-                    result = valor1 + valor2;
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "";
-                    break;
+                    valor1 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
+                    valor2 = double.Parse(Lbl_resultado);
+                    resultado = valor1 + valor2;
+                    return resultado;
                 case "SUBTRACAO":
-                    valor2 = double.Parse(Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim());
-                    Lbl_calculando.Text += valor1.ToString() + " =";
-                    result =  valor2 - valor1;
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "";
-                    break;
+                    valor1 = double.Parse(Lbl_resultado);
+                    valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
+                    resultado = valor2 - valor1;
+                    return resultado;
                 case "MULTIPLICACAO":
-                    valor2 = double.Parse(Lbl_calculando.Text.Replace('x', ' ').Trim());
-                    Lbl_calculando.Text += valor1.ToString() + " =";
-                    result = valor2 * valor1;
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "";
-                    break;
+                    valor1 = double.Parse(Lbl_resultado);
+                    valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
+                    resultado = valor2 * valor1;
+                    return resultado;
                 case "DIVISAO":
-                    valor2 = double.Parse(Lbl_calculando.Text.Replace('÷', ' ').Trim());
+                    valor1 = double.Parse(Lbl_resultado);
+                    valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
                     if (valor1 == 0 || valor2 == 0)
                     {
                         MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return 0;
+                        
                     }
                     else
                     {
-                        Lbl_calculando.Text += valor1.ToString() + " =";
-                        result = valor2 / valor1;
-                        Math.Round(result, 2);
-                        Lbl_resultado.Text = result.ToString();
-                        sub = true;
-                        tipoOperacao = "";
+                        resultado = Math.Round((valor2 / valor1), 2);
+                        return resultado;
                     }
-                    break;
                 case "RAIZ":
-                    valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('t', ' ').Replace('(', ' ').Replace(')', ' ').Trim());
-                    Lbl_calculando.Text = "sqrt(" + valor1.ToString() + ") =";
-                    result = Math.Round(Math.Sqrt(valor1), 2);
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "";
-                    break;
+                    valor1 = double.Parse(Lbl_resultado);
+                    resultado = Math.Sqrt(valor1);
+                    return resultado;
                 case "POTENCIA":
-                    valor1 = double.Parse(Lbl_calculando.Text.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim());
-                    Lbl_calculando.Text = "sqr(" + valor1.ToString() + ") =";
-                    result = Math.Round(Math.Pow(valor1, 2), 2);
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "";
-                    break;
+                    valor1 = double.Parse(Lbl_calculando.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim());
+                    resultado = Math.Round(Math.Pow(valor1, 2), 2);
+                    return resultado;
                 case "FRACAO":
-                    valor1 = double.Parse(Lbl_calculando.Text.Remove(1, 3).Replace(')',' ').Trim());
-                    result = 1 / valor1;
-                    Lbl_calculando.Text = "1/(" + valor1.ToString() + ") =";
-                    Lbl_resultado.Text = result.ToString();
-                    sub = true;
-                    tipoOperacao = "";
-                    break; 
+                    valor1 = double.Parse(Lbl_calculando.Remove(1, 3).Replace(')', ' ').Trim());
+                    resultado = 1 / valor1;
+                    return resultado;
                 default:
-                    Lbl_calculando.Text = valor1.ToString() + " =";                    
-                    sub = true;
-                    tipoOperacao = "";
-                    break;
+                    MessageBox.Show("Insira uma operação válida", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return 0;
             }
         }
     }
