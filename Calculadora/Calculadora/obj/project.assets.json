@@ -8,23 +8,23 @@
     "net6.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\lairon\\.nuget\\packages\\": {},
+    "C:\\Users\\Lallow\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lairon\\source\\Calculadora\\Calculadora\\Calculadora\\Calculadora.csproj",
+      "projectUniqueName": "C:\\VSCommunity\\Calculadora\\Calculadora\\Calculadora\\Calculadora.csproj",
       "projectName": "Calculadora",
-      "projectPath": "C:\\Users\\lairon\\source\\Calculadora\\Calculadora\\Calculadora\\Calculadora.csproj",
-      "packagesPath": "C:\\Users\\lairon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lairon\\source\\Calculadora\\Calculadora\\Calculadora\\obj\\",
+      "projectPath": "C:\\VSCommunity\\Calculadora\\Calculadora\\Calculadora\\Calculadora.csproj",
+      "packagesPath": "C:\\Users\\Lallow\\.nuget\\packages\\",
+      "outputPath": "C:\\VSCommunity\\Calculadora\\Calculadora\\Calculadora\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\lairon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Lallow\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -33,7 +33,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

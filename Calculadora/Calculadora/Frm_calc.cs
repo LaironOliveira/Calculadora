@@ -463,16 +463,40 @@ namespace Calculadora
             }          
         }
 
+        // continuar o desenvolvimento
         private void Btn_raiz_quadrada_Click(object sender, EventArgs e)
         {
-            //if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
-            //{
-            //    Lbl_calculando.Text = " ";
-            //}
-            //else
-            //{
+            if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
+            {
+                Lbl_calculando.Text = " ";
+            }
+            else if (tipoOperacao != "RAIZ" && tipoOperacao != "")
+            {
 
-            //}
+            }
+            else if (Lbl_calculando.Text == " ")
+            {
+                if(press == true)
+                {
+                        tipoOperacao = "RAIZ";
+                    double resultado = double.Parse(Lbl_resultado.Text);
+                    Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
+                    resultado = Math.Sqrt(resultado);
+                    Lbl_resultado.Text = resultado.ToString("N2");
+                    press = false;
+                }
+            }
+            else
+            {
+                if(press == true)
+                {
+                    double resultado = double.Parse(Lbl_resultado.Text);
+                    Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
+                    resultado = Math.Sqrt(resultado);
+                    Lbl_resultado.Text = resultado.ToString("N2");
+                    press = false;
+                }
+            }
         }
 
         private void Btn_elevar_quadrado_Click(object sender, EventArgs e)
@@ -595,10 +619,6 @@ namespace Calculadora
                     valor1 = double.Parse(Lbl_resultado);
                     valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
                     resultado = Math.Round((valor2 / valor1), 2);
-                    return resultado;
-                case "RAIZ":
-                    valor1 = double.Parse(Lbl_resultado);
-                    resultado = Math.Sqrt(valor1);
                     return resultado;
                 case "POTENCIA":
                     valor1 = double.Parse(Lbl_calculando.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim());
