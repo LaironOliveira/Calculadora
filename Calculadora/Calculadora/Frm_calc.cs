@@ -17,9 +17,8 @@ namespace Calculadora
 
         bool press = false;
         //Variáveis responsáveis por identificar se aldum botão numérico foi pressionado.
-        
-        Raiz r = new Raiz();
-        // Utilizado para o cálculo de raiz quadrada
+
+        double valorRaiz=0;
 
         public Frm_calc()
         {
@@ -510,44 +509,49 @@ namespace Calculadora
             {
                 operacaoPassada = tipoOperacao;
                 Lbl_operacao_passada.Text = Lbl_calculando.Text;
-                r.Calc(tipoOperacao, Lbl_resultado.Text, Lbl_calculando.Text);
-                Lbl_calculando.Text = r.getLabel2();
-                Lbl_resultado.Text = r.getLabel1();
-                sub = true;
                 tipoOperacao = "RAIZ";
-            }
-            else if (Lbl_calculando.Text == " ")
-            {
-                tipoOperacao = "RAIZ";
-                r.Calc(tipoOperacao, Lbl_resultado.Text, Lbl_calculando.Text);
-                Lbl_calculando.Text = r.getLabel2();
-                Lbl_resultado.Text = r.getLabel1();
-                press = false;
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
+                Lbl_resultado.Text = resultado.ToString("N2");
                 sub = true;
+                valorRaiz = resultado;
             }
             else
             {
-                r.Calc(tipoOperacao, Lbl_resultado.Text, Lbl_calculando.Text);
-                Lbl_calculando.Text = r.getLabel2();
-                Lbl_resultado.Text = r.getLabel1();
-                press = false;
+                tipoOperacao = "RAIZ";
+                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
+                Lbl_resultado.Text = resultado.ToString("N2");
                 sub = true;
+                valorRaiz = resultado;
             }
         }
 
         // Continuar desenvolvimento
+        // Não funcional
 
         //Botão responsável pela operação de elevar um número a segunda potência
         private void Btn_elevar_quadrado_Click(object sender, EventArgs e)
         {
-            //if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
-            //{
-            //    Lbl_calculando.Text = " ";
-            //}
-            //else
-            //{
-
-            //}
+            if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
+            {
+                Lbl_calculando.Text = " ";
+            }
+            else
+            {
+                if (Lbl_calculando.Text == " ")
+                {
+                    Lbl_calculando.Text = "Sqr( " + Lbl_resultado.Text + ")";
+                    Lbl_resultado.Text = (double.Parse(Lbl_resultado.Text) * double.Parse(Lbl_resultado.Text)).ToString();
+                    sub = true;
+                }
+                else
+                {
+                    Lbl_calculando.Text = "Sqr( " + Lbl_resultado.Text + ")";
+                    Lbl_resultado.Text = (double.Parse(Lbl_resultado.Text) * double.Parse(Lbl_resultado.Text)).ToString();
+                    sub = true;
+                }
+            }
         }
 
         // Botão responsável pela operação de fracionar um número digitado
@@ -607,28 +611,28 @@ namespace Calculadora
                 switch (operacaoPassada)
                 {
                     case "ADICAO":
-                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('+', ' ').Trim()) + double.Parse(r.getLabel1());
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('+', ' ').Trim()) + valorRaiz;
                         Lbl_calculando.Text += " =";
                         Lbl_resultado.Text = calc.ToString();
                         break;
                     case "SUBTRACAO":
-                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('-', ' ').Trim()) - double.Parse(r.getLabel1());
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('-', ' ').Trim()) - valorRaiz;
                         Lbl_calculando.Text += " =";
                         Lbl_resultado.Text = calc.ToString();
                         break;
                     case "MULTIPLICACAO":
-                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('x', ' ').Trim()) * double.Parse(r.getLabel1());
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('x', ' ').Trim()) * valorRaiz;
                         Lbl_calculando.Text += " =";
                         Lbl_resultado.Text = calc.ToString();
                         break;
                     case "DIVISAO":
-                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('÷', ' ').Trim()) / double.Parse(r.getLabel1());
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('÷', ' ').Trim()) / valorRaiz;
                         Lbl_calculando.Text += " =";
                         Lbl_resultado.Text = calc.ToString();
                         break;
                     default:
                         Lbl_calculando.Text += " =";
-                        Lbl_resultado.Text = Math.Round(double.Parse(Lbl_resultado.Text)).ToString();
+                        Lbl_resultado.Text = Math.Round(valorRaiz).ToString();
                         break;
                 }
                 tipoOperacao = "";
@@ -710,6 +714,9 @@ namespace Calculadora
                     valor1 = double.Parse(Lbl_resultado);
                     valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
                     resultado = Math.Round((valor2 / valor1), 2);
+                    return resultado;
+                case "RAIZ":
+                    resultado = Math.Sqrt(double.Parse(Lbl_resultado));
                     return resultado;
                 case "POTENCIA":
                     valor1 = double.Parse(Lbl_calculando.Replace('s', ' ').Replace('q', ' ').Replace('r', ' ').Replace('(', ' ').Replace(')', ' ').Trim());
