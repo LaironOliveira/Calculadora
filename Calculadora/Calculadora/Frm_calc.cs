@@ -13,26 +13,22 @@ namespace Calculadora
 
         string tipoOperacao = "";
         string operacaoPassada = "";
-        //Variável responsávle pela definição do tipo de cálculo.
+        //Variável responsávle pela identificação dos ipos de cálculos
 
         bool press = false;
-        //Variáveis responsáveis por identificar quais botões foram pressionados.
+        //Variáveis responsáveis por identificar se aldum botão numérico foi pressionado.
         
         Raiz r = new Raiz();
-        // Instanciando Objeto da classe raiz quadrada
+        // Utilizado para o cálculo de raiz quadrada
 
         public Frm_calc()
         {
             InitializeComponent();
         }
 
+        // Botões numéricos
         private void Btn_zero_Click(object sender, EventArgs e)
         {
-            //
-            //Verificação se o número na label resultado é igual a zero ou não para que o programa
-            //possa sobreescrever ou adicionar mais um número a label resultado.
-            //Essa verificação é feita a todos os números do teclado numérico.
-            //
             if (Lbl_resultado.Text == "0" || sub==true)
             {
                 Lbl_resultado.Text = "0";
@@ -170,17 +166,10 @@ namespace Calculadora
                 Lbl_resultado.Text += "9";
             }
         }
-        
-        //
-        // Fim da verificação dos números inseridos
-        //
 
+        // Botão de inversão de sinal dos números digitados
         private void Btn_inverte_sinal_Click(object sender, EventArgs e)
         {
-            //
-            //Verifica se os números da label resultado são positivos, caso sim, adiciona o sinal
-            //de negativo. Caso sejam negativos, remove o sinal de negativo.
-            //
             double num = double.Parse(Lbl_resultado.Text);
             if (num > 0)
             {
@@ -194,11 +183,13 @@ namespace Calculadora
             }
         }
 
+        // Botão que adiciona uma vírgula (Funciona apenas se o windows utilizado for da versão Pt-BR ABNT2)
         private void Btn_virgula_Click(object sender, EventArgs e)
         {
             Lbl_resultado.Text += ",";
         }
 
+        //Botão responsável por limpar todas as informações da calculadora
         private void Btn_limpar_Click(object sender, EventArgs e)
         {
             Lbl_resultado.Text = "0";
@@ -209,23 +200,18 @@ namespace Calculadora
             Lbl_operacao_passada.Text = " ";
         }
 
+        // Botão responsável por limpar apenas os números que são digitados
         private void Btn_limpar_resultado_Click(object sender, EventArgs e)
         {
             Lbl_resultado.Text = "0";
         }
 
+        // Botão responsável por apagar os números digitados de maneira unitária
         private void Btn_limpar_unidade_Click(object sender, EventArgs e)
         {
             if (Lbl_resultado.Text.Length > 1)
             {
-                //
-                //Recebe o tamanho da sequência de caracteres menos 1, no caso abaixo é 1
-                //
                 int apaga = Lbl_resultado.Text.Length - (Lbl_resultado.Text.Length - 1);
-                //
-                //Remove a posição do vetor de caracteres (string) referente ao tamanho capturado na variável apaga. Na função Remove() o primeiro parâmetro é
-                //a posição no vetor do qual será iniciado a remoção e o segundo parâmetro é o número de caracteres que serão removidos
-                //
                 Lbl_resultado.Text = Lbl_resultado.Text.Remove((Lbl_resultado.Text.Length - 1), apaga);
             }
             else
@@ -234,6 +220,7 @@ namespace Calculadora
             }
         }
 
+        // Botão que realiza a operação de adição
         private void Btn_adicao_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -292,6 +279,8 @@ namespace Calculadora
                 }
             }                            
         }
+
+        //Botão que realiza a operação de subtração
         private void Btn_subtracao_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -353,6 +342,7 @@ namespace Calculadora
             }
         }
 
+        //Botão que realiza a operação de multiplicação
         private void Btn_multiplicacao_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -412,6 +402,7 @@ namespace Calculadora
             }
         }
 
+        // Botão que realiza a operação de divisão
         private void Btn_divisao_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -508,7 +499,7 @@ namespace Calculadora
             }          
         }
 
-        // continuar o desenvolvimento
+        // Botão que realiza a operação de raiz quadrada
         private void Btn_raiz_quadrada_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -544,6 +535,9 @@ namespace Calculadora
             }
         }
 
+        // Continuar desenvolvimento
+
+        //Botão responsável pela operação de elevar um número a segunda potência
         private void Btn_elevar_quadrado_Click(object sender, EventArgs e)
         {
             //if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -556,6 +550,7 @@ namespace Calculadora
             //}
         }
 
+        // Botão responsável pela operação de fracionar um número digitado
         private void Btn_fracao_Click(object sender, EventArgs e)
         {
             //if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -568,6 +563,10 @@ namespace Calculadora
             //}
         }
 
+        // Botão responsável pela operação de porcentagem.
+        // De maneira resumida: No momento de realização de uma operação ele irá fazer a
+        // cálculo da porcentagem em relação ao primeiro número da operação e realocar o valor referente a essa operação
+        // Exemplo: 50 + 50% -> output: 50 + 25
         private void Btn_porcentagem_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -592,6 +591,7 @@ namespace Calculadora
             }
         }
 
+        // Botão que realiza a operação previamente exposta
         private void Btn_resultado_Click(object sender, EventArgs e)
         {
             if(tipoOperacao == "")
@@ -682,7 +682,8 @@ namespace Calculadora
                 operacaoPassada = "";
             }
         }
-        //Função de Cálculo
+
+        //Função responsável pelos Cálculos.
         public double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
         {
             double valor1;
