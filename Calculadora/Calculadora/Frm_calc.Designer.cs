@@ -55,13 +55,14 @@
             this.Btn_virgula = new System.Windows.Forms.Button();
             this.Btn_zero = new System.Windows.Forms.Button();
             this.Btn_inverte_sinal = new System.Windows.Forms.Button();
+            this.Lbl_operacao_passada = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Lbl_resultado
             // 
             this.Lbl_resultado.AutoSize = true;
             this.Lbl_resultado.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Lbl_resultado.Location = new System.Drawing.Point(11, 60);
+            this.Lbl_resultado.Location = new System.Drawing.Point(11, 75);
             this.Lbl_resultado.Name = "Lbl_resultado";
             this.Lbl_resultado.Size = new System.Drawing.Size(42, 50);
             this.Lbl_resultado.TabIndex = 0;
@@ -115,10 +116,10 @@
             // 
             this.Lbl_calculando.AutoSize = true;
             this.Lbl_calculando.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Lbl_calculando.Location = new System.Drawing.Point(11, 31);
+            this.Lbl_calculando.Location = new System.Drawing.Point(11, 46);
             this.Lbl_calculando.Name = "Lbl_calculando";
             this.Lbl_calculando.Size = new System.Drawing.Size(12, 17);
-            this.Lbl_calculando.TabIndex = 5;
+            this.Lbl_calculando.TabIndex = 0;
             this.Lbl_calculando.Text = " ";
             // 
             // Btn_fracao
@@ -341,11 +342,22 @@
             this.Btn_inverte_sinal.UseVisualStyleBackColor = true;
             this.Btn_inverte_sinal.Click += new System.EventHandler(this.Btn_inverte_sinal_Click);
             // 
+            // Lbl_operacao_passada
+            // 
+            this.Lbl_operacao_passada.AutoSize = true;
+            this.Lbl_operacao_passada.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.Lbl_operacao_passada.Location = new System.Drawing.Point(12, 18);
+            this.Lbl_operacao_passada.Name = "Lbl_operacao_passada";
+            this.Lbl_operacao_passada.Size = new System.Drawing.Size(12, 17);
+            this.Lbl_operacao_passada.TabIndex = 0;
+            this.Lbl_operacao_passada.Text = " ";
+            // 
             // Frm_calc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(329, 445);
+            this.Controls.Add(this.Lbl_operacao_passada);
             this.Controls.Add(this.Btn_virgula);
             this.Controls.Add(this.Btn_zero);
             this.Controls.Add(this.Btn_inverte_sinal);
@@ -410,5 +422,6 @@
         private Button Btn_virgula;
         private Button Btn_zero;
         private Button Btn_inverte_sinal;
+        private Label Lbl_operacao_passada;
     }
 }

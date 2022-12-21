@@ -12,19 +12,18 @@ namespace Calculadora
         //operações anteriores se acumulem.
 
         string tipoOperacao = "";
-        string tipoOperacao2 = "";
+        string operacaoPassada = "";
         //Variável responsávle pela definição do tipo de cálculo.
 
         bool press = false;
         //Variáveis responsáveis por identificar quais botões foram pressionados.
-
-        double Rvalor1;
-        double Rvalor2;
+        
+        Raiz r = new Raiz();
+        // Instanciando Objeto da classe raiz quadrada
 
         public Frm_calc()
         {
-            InitializeComponent();           
-
+            InitializeComponent();
         }
 
         private void Btn_zero_Click(object sender, EventArgs e)
@@ -206,6 +205,8 @@ namespace Calculadora
             Lbl_calculando.Text = " ";
             sub = false;
             tipoOperacao = "";
+            operacaoPassada = "";
+            Lbl_operacao_passada.Text = " ";
         }
 
         private void Btn_limpar_resultado_Click(object sender, EventArgs e)
@@ -239,7 +240,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "ADICAO" && tipoOperacao != "")
+            else if (tipoOperacao != "ADICAO" && tipoOperacao != "" && tipoOperacao != "RAIZ")
             {
                 if (press == true)
                 {
@@ -257,6 +258,15 @@ namespace Calculadora
                     tipoOperacao = "ADICAO";
                 }
             }
+            else if (tipoOperacao == "RAIZ")
+            {
+                operacaoPassada = tipoOperacao;
+                Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                Lbl_calculando.Text = Math.Round(double.Parse(Lbl_resultado.Text)).ToString() + " + ";
+                sub = true;
+                press = false;
+                tipoOperacao = "ADICAO";
+            }
             else if (Lbl_calculando.Text == " ")
             {
                 if (press == true)
@@ -273,6 +283,8 @@ namespace Calculadora
             {
                 if (press == true)
                 {
+                    Lbl_operacao_passada.Text = " ";
+                    operacaoPassada = "";
                     double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                     Lbl_calculando.Text = result.ToString() + " + ";
                     sub = true;
@@ -286,7 +298,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "SUBTRACAO" && tipoOperacao != "")
+            else if (tipoOperacao != "SUBTRACAO" && tipoOperacao != "" && tipoOperacao != "RAIZ")
             {
                 if (press == true)
                 {
@@ -303,6 +315,15 @@ namespace Calculadora
                     sub = true;
                     tipoOperacao = "SUBTRACAO";
                 }
+            }
+            else if (tipoOperacao == "RAIZ")
+            {
+                operacaoPassada = tipoOperacao;
+                Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                Lbl_calculando.Text = Math.Round(double.Parse(Lbl_resultado.Text)).ToString() + " - ";
+                sub = true;
+                press = false;
+                tipoOperacao = "SUBTRACAO";
             }
             else if (Lbl_calculando.Text == " ")
             {
@@ -322,6 +343,8 @@ namespace Calculadora
             {
                 if (press == true)
                 {
+                    operacaoPassada = "";
+                    Lbl_operacao_passada.Text = " ";
                     double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                     Lbl_calculando.Text = result.ToString() + " - ";
                     sub = true;
@@ -336,7 +359,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "MULTIPLICACAO"  && tipoOperacao != "")
+            else if (tipoOperacao != "MULTIPLICACAO"  && tipoOperacao != "" && tipoOperacao != "RAIZ")
             {
                 if (press == true)
                 {
@@ -354,6 +377,15 @@ namespace Calculadora
                     tipoOperacao = "MULTIPLICACAO";
                 }
             }
+            else if (tipoOperacao == "RAIZ")
+            {
+                operacaoPassada = tipoOperacao;
+                Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                Lbl_calculando.Text = Math.Round(double.Parse(Lbl_resultado.Text)).ToString() + " x ";
+                sub = true;
+                press = false;
+                tipoOperacao = "MULTIPLICACAO";
+            }
             else if (Lbl_calculando.Text == " ")
             {
                 if (press == true)
@@ -370,6 +402,8 @@ namespace Calculadora
             {
                 if (press == true)
                 {
+                    operacaoPassada = "";
+                    Lbl_operacao_passada.Text = " ";
                     double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                     Lbl_calculando.Text = result.ToString() + " x ";
                     sub = true;
@@ -384,7 +418,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = " ";
             }
-            else if (tipoOperacao != "DIVISAO" && tipoOperacao != "")
+            else if (tipoOperacao != "DIVISAO" && tipoOperacao != "" && tipoOperacao != "RAIZ")
             {
                 if (press == true)
                 {
@@ -410,6 +444,15 @@ namespace Calculadora
                     sub = true;
                     tipoOperacao = "DIVISAO";
                 }
+            }
+            else if (tipoOperacao == "RAIZ")
+            {
+                operacaoPassada = tipoOperacao;
+                Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                Lbl_calculando.Text = Math.Round(double.Parse(Lbl_resultado.Text)).ToString() + " ÷ ";
+                sub = true;
+                press = false;
+                tipoOperacao = "DIVISAO";
             }
             else if (Lbl_calculando.Text == " ")
             {
@@ -441,6 +484,8 @@ namespace Calculadora
             {
                 if (press == true)
                 {
+                    operacaoPassada = "";
+                    Lbl_operacao_passada.Text = " ";
                     tipoOperacao = "DIVISAO";
                     if (Lbl_calculando.Text.Remove((Lbl_calculando.Text.Length - 2), 2).Trim() != "0" && Lbl_resultado.Text != "0")
                     {
@@ -472,30 +517,30 @@ namespace Calculadora
             }
             else if (tipoOperacao != "RAIZ" && tipoOperacao != "")
             {
-
+                operacaoPassada = tipoOperacao;
+                Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                r.Calc(tipoOperacao, Lbl_resultado.Text, Lbl_calculando.Text);
+                Lbl_calculando.Text = r.getLabel2();
+                Lbl_resultado.Text = r.getLabel1();
+                sub = true;
+                tipoOperacao = "RAIZ";
             }
             else if (Lbl_calculando.Text == " ")
             {
-                if(press == true)
-                {
-                        tipoOperacao = "RAIZ";
-                    double resultado = double.Parse(Lbl_resultado.Text);
-                    Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                    resultado = Math.Sqrt(resultado);
-                    Lbl_resultado.Text = resultado.ToString("N2");
-                    press = false;
-                }
+                tipoOperacao = "RAIZ";
+                r.Calc(tipoOperacao, Lbl_resultado.Text, Lbl_calculando.Text);
+                Lbl_calculando.Text = r.getLabel2();
+                Lbl_resultado.Text = r.getLabel1();
+                press = false;
+                sub = true;
             }
             else
             {
-                if(press == true)
-                {
-                    double resultado = double.Parse(Lbl_resultado.Text);
-                    Lbl_calculando.Text = "sqrt(" + resultado.ToString() + ")";
-                    resultado = Math.Sqrt(resultado);
-                    Lbl_resultado.Text = resultado.ToString("N2");
-                    press = false;
-                }
+                r.Calc(tipoOperacao, Lbl_resultado.Text, Lbl_calculando.Text);
+                Lbl_calculando.Text = r.getLabel2();
+                Lbl_resultado.Text = r.getLabel1();
+                press = false;
+                sub = true;
             }
         }
 
@@ -542,6 +587,8 @@ namespace Calculadora
                 Lbl_calculando.Text = " ";
                 Lbl_resultado.Text = "0";
                 tipoOperacao = "";
+                Lbl_operacao_passada.Text = " ";
+                operacaoPassada = "";
             }
         }
 
@@ -550,14 +597,52 @@ namespace Calculadora
             if(tipoOperacao == "")
             {
                 Lbl_calculando.Text = Lbl_resultado.Text + " =";
+                Lbl_operacao_passada.Text = " ";
                 sub = true;
                 press = false;
             }
-            else if(tipoOperacao == "RAIZ" || tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA")
+            else if(tipoOperacao == "RAIZ")
+            {
+                double calc;
+                switch (operacaoPassada)
+                {
+                    case "ADICAO":
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('+', ' ').Trim()) + double.Parse(r.getLabel1());
+                        Lbl_calculando.Text += " =";
+                        Lbl_resultado.Text = calc.ToString();
+                        break;
+                    case "SUBTRACAO":
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('-', ' ').Trim()) - double.Parse(r.getLabel1());
+                        Lbl_calculando.Text += " =";
+                        Lbl_resultado.Text = calc.ToString();
+                        break;
+                    case "MULTIPLICACAO":
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('x', ' ').Trim()) * double.Parse(r.getLabel1());
+                        Lbl_calculando.Text += " =";
+                        Lbl_resultado.Text = calc.ToString();
+                        break;
+                    case "DIVISAO":
+                        calc = double.Parse(Lbl_operacao_passada.Text.Replace('÷', ' ').Trim()) / double.Parse(r.getLabel1());
+                        Lbl_calculando.Text += " =";
+                        Lbl_resultado.Text = calc.ToString();
+                        break;
+                    default:
+                        Lbl_calculando.Text += " =";
+                        Lbl_resultado.Text = Math.Round(double.Parse(Lbl_resultado.Text)).ToString();
+                        break;
+                }
+                tipoOperacao = "";
+                operacaoPassada = "";
+                sub = true;
+                press = false;
+            }
+            else if(tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA")
             {
                 Lbl_calculando.Text += " =";
+                Lbl_operacao_passada.Text = " ";
                 sub = true;
                 tipoOperacao = "";
+                operacaoPassada = "";
                 press = false;
             }
             else if (tipoOperacao == "DIVISAO")
@@ -569,7 +654,9 @@ namespace Calculadora
                     Lbl_resultado.Text = resultado.ToString();
                     sub = true;
                     tipoOperacao = "";
+                    operacaoPassada = "";
                     press = false;
+                    Lbl_operacao_passada.Text = " ";
                 }
                 else
                 {
@@ -578,7 +665,9 @@ namespace Calculadora
                     Lbl_resultado.Text = "0";
                     sub = true;
                     tipoOperacao = "";
+                    operacaoPassada = "";
                     press = false;
+                    Lbl_operacao_passada.Text = " ";
                 }
             }
             else
@@ -589,9 +678,10 @@ namespace Calculadora
                 sub = true;
                 tipoOperacao = "";
                 press = false;
+                Lbl_operacao_passada.Text = " ";
+                operacaoPassada = "";
             }
         }
-
         //Função de Cálculo
         public double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
         {
