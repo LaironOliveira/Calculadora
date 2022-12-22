@@ -710,7 +710,9 @@ namespace Calculadora
             }
         }
 
+        // Continuar desenvolvimento
         // Botão responsável pela operação de fracionar um número digitado
+        // Não funcional
         private void Btn_fracao_Click(object sender, EventArgs e)
         {
             //if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
@@ -725,7 +727,7 @@ namespace Calculadora
 
         // Botão responsável pela operação de porcentagem.
         // De maneira resumida: No momento de realização de uma operação ele irá fazer a
-        // cálculo da porcentagem em relação ao primeiro número da operação e realocar o valor referente a essa operação
+        // cálculo da porcentagem em relação ao primeiro número da operação, e realocar o valor referente a sua porcentagem
         // Exemplo: 50 + 50% -> output: 50 + 25
         private void Btn_porcentagem_Click(object sender, EventArgs e)
         {
