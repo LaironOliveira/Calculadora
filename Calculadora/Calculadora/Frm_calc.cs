@@ -238,7 +238,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = Lbl_resultado.Text + " + ";
             }
-            else if (tipoOperacao != "ADICAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
+            else if (tipoOperacao != "ADICAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA" && tipoOperacao != "FRACAO")
             {
                 if (press == true)
                 {
@@ -253,7 +253,7 @@ namespace Calculadora
                     tipoOperacao = "ADICAO";
                 }
             }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA")
+            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
             {
                 if (notpress == true)
                 {
@@ -304,7 +304,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = Lbl_resultado.Text + " - ";
             }
-            else if (tipoOperacao != "SUBTRACAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
+            else if (tipoOperacao != "SUBTRACAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA" && tipoOperacao != "FRACAO")
             {
                 if (press == true)
                 {
@@ -319,7 +319,7 @@ namespace Calculadora
                     tipoOperacao = "SUBTRACAO";
                 }
             }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA")
+            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
             {
                 if (notpress == true)
                 {
@@ -376,7 +376,7 @@ namespace Calculadora
             {
                 Lbl_calculando.Text = Lbl_resultado.Text + " x ";
             }
-            else if (tipoOperacao != "MULTIPLICACAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
+            else if (tipoOperacao != "MULTIPLICACAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA" && tipoOperacao != "FRACAO")
             {
                 if (press == true)
                 {
@@ -391,7 +391,7 @@ namespace Calculadora
                     tipoOperacao = "MULTIPLICACAO";
                 }
             }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA")
+            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
             {
                 if (notpress == true)
                 {
@@ -443,7 +443,7 @@ namespace Calculadora
                 tipoOperacao = "DIVISAO";
                 Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
             }
-            else if (tipoOperacao != "DIVISAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
+            else if (tipoOperacao != "DIVISAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA" && tipoOperacao != "FRACAO")
             {
                 if (press == true)
                 {
@@ -467,7 +467,7 @@ namespace Calculadora
                     tipoOperacao = "DIVISAO";
                 }
             }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA")
+            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
             {
                 if (notpress == true)
                 {
@@ -553,7 +553,7 @@ namespace Calculadora
         // Botão que realiza a operação de raiz quadrada
         private void Btn_raiz_quadrada_Click(object sender, EventArgs e)
         {
-            if (tipoOperacao != "RAIZ" && tipoOperacao != "" && tipoOperacao != "POTENCIA")
+            if (tipoOperacao != "RAIZ" && tipoOperacao != "" && tipoOperacao != "POTENCIA" && tipoOperacao != "FRACAO")
             {
                 operacaoPassada = tipoOperacao;
                 Lbl_operacao_passada.Text = Lbl_calculando.Text;
@@ -563,7 +563,7 @@ namespace Calculadora
                 Lbl_resultado.Text = resultado.ToString("N2");
                 valor = resultado;
             }
-            else if (tipoOperacao == "POTENCIA")
+            else if (tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
             {
                 if (notpress == true)
                 {
@@ -579,6 +579,8 @@ namespace Calculadora
                 }
                 else
                 {
+                    operacaoPassada = "";
+                    Lbl_operacao_passada.Text = " ";
                     tipoOperacao = "RAIZ";
                     double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                     Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
@@ -601,7 +603,7 @@ namespace Calculadora
         //Botão responsável pela operação de elevar um número a segunda potência
         private void Btn_elevar_quadrado_Click(object sender, EventArgs e)
         {
-            if (tipoOperacao != "POTENCIA" && tipoOperacao != "" && tipoOperacao != "RAIZ")
+            if (tipoOperacao != "POTENCIA" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "FRACAO")
             {
                 operacaoPassada = tipoOperacao;
                 Lbl_operacao_passada.Text = Lbl_calculando.Text;
@@ -611,7 +613,7 @@ namespace Calculadora
                 Lbl_resultado.Text = resultado.ToString("N2");
                 valor = resultado;
             }
-            else if (tipoOperacao == "RAIZ")
+            else if (tipoOperacao == "RAIZ" || tipoOperacao == "FRACAO")
             {
                 if(notpress == true)
                 {
@@ -659,7 +661,42 @@ namespace Calculadora
             }
             else
             {
-                if (Lbl_resultado.Text != "0")
+                if (tipoOperacao != "FRACAO" && tipoOperacao != "" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA" && Lbl_resultado.Text != "0")
+                {
+                    operacaoPassada = tipoOperacao;
+                    Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                    tipoOperacao = "FRACAO";
+                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                    Lbl_calculando.Text = "1/(" + Lbl_resultado.Text + ")";
+                    Lbl_resultado.Text = resultado.ToString("N2");
+                    valor = resultado;
+                }
+                else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" && Lbl_resultado.Text != "0")
+                {
+                    if (notpress == true)
+                    {
+                        operacaoPassada = "";
+                        Lbl_operacao_passada.Text = " ";
+                        operacaoPassada = tipoOperacao;
+                        Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                        Lbl_calculando.Text = "1/(" + valor.ToString("N2") + ")";
+                        tipoOperacao = "FRACAO";
+                        double resultado = Calcular(Lbl_calculando.Text, valor.ToString(), tipoOperacao);
+                        Lbl_resultado.Text = resultado.ToString("N2");
+                        valor = resultado;
+                    }
+                    else
+                    {
+                        operacaoPassada = "";
+                        Lbl_operacao_passada.Text = " ";
+                        tipoOperacao = "FRACAO";
+                        Lbl_calculando.Text = "1/(" + Lbl_resultado.Text + ")";
+                        double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                        Lbl_resultado.Text = resultado.ToString("N2");
+                        valor = resultado;
+                    }
+                }
+                else if (tipoOperacao == "FRACAO" && Lbl_resultado.Text != "0")
                 {
                     tipoOperacao = "FRACAO";
                     Lbl_calculando.Text = "1/(" + Lbl_resultado.Text + ")";
@@ -669,7 +706,12 @@ namespace Calculadora
                 }
                 else
                 {
-
+                    Lbl_calculando.Text = " ";
+                    Lbl_resultado.Text = "0";
+                    tipoOperacao = "";
+                    Lbl_operacao_passada.Text = " ";
+                    operacaoPassada = "";
+                    MessageBox.Show("Não é possível dividir por Zero", "Alerta!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             sub = true;
@@ -712,7 +754,7 @@ namespace Calculadora
                 Lbl_calculando.Text = Lbl_resultado.Text + " =";
                 Lbl_operacao_passada.Text = " ";
             }
-            else if(tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA")
+            else if(tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
             {
                 if (notpress == true)
                 {
@@ -749,11 +791,6 @@ namespace Calculadora
                     Lbl_operacao_passada.Text = " ";
                     Lbl_calculando.Text = Lbl_resultado.Text + " =";
                 }
-            }
-            else if(tipoOperacao == "FRACAO")
-            {
-                Lbl_calculando.Text += " =";
-                Lbl_operacao_passada.Text = " ";
             }
             else if (tipoOperacao == "DIVISAO")
             {
