@@ -243,8 +243,7 @@ namespace Calculadora
                 if (press == true)
                 {
                     double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = Lbl_resultado.Text + " + ";
-                    Lbl_resultado.Text = resultado.ToString();
+                    Lbl_calculando.Text = resultado.ToString() + " + ";
                     tipoOperacao = "ADICAO";
                 }
                 else
@@ -309,8 +308,7 @@ namespace Calculadora
                 if (press == true)
                 {
                     double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = Lbl_resultado.Text + " - ";
-                    Lbl_resultado.Text = resultado.ToString();
+                    Lbl_calculando.Text = resultado.ToString() + " - ";
                     tipoOperacao = "SUBTRACAO";
                 }
                 else
@@ -347,11 +345,7 @@ namespace Calculadora
                 if (press == true)
                 {
                     tipoOperacao = "SUBTRACAO";
-                    Lbl_calculando.Text = "0";
-                    double valor1 = double.Parse(Lbl_calculando.Text);
-                    double valor2 = double.Parse(Lbl_resultado.Text);
-                    double result = valor2 - valor1;
-                    Lbl_calculando.Text = result.ToString() + " - ";
+                    Lbl_calculando.Text = Lbl_resultado.Text + " - ";
                 }
             }
             else
@@ -381,8 +375,7 @@ namespace Calculadora
                 if (press == true)
                 {
                     double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = Lbl_resultado.Text + " x ";
-                    Lbl_resultado.Text = resultado.ToString();
+                    Lbl_calculando.Text = resultado.ToString() + " x ";
                     tipoOperacao = "MULTIPLICACAO";
                 } 
                 else
@@ -450,8 +443,7 @@ namespace Calculadora
                     double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                     if (resultado != 0)
                     {
-                        Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
-                        Lbl_resultado.Text = resultado.ToString("N2");
+                        Lbl_calculando.Text = resultado.ToString("N2") + " ÷ ";
                         tipoOperacao = "DIVISAO";
                     }
                     else
@@ -650,9 +642,7 @@ namespace Calculadora
             notpress = true;
         }
 
-        // Continuar desenvolvimento
         // Botão responsável pela operação de fracionar um número digitado
-        // Não funcional
         private void Btn_fracao_Click(object sender, EventArgs e)
         {
             if (Lbl_calculando.Text.Substring(Lbl_calculando.Text.Length - 1) == "=")
