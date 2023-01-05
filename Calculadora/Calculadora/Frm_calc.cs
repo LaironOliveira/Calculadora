@@ -814,7 +814,7 @@ namespace Calculadora
         }
 
         //Função responsável pelos Cálculos.
-        public static double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
+        public double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
         {
             double valor1;
             double valor2;
