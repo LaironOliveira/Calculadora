@@ -13,7 +13,7 @@ namespace Calculadora
 
         string tipoOperacao = "";
         string operacaoPassada = "";
-        //Variável responsávle pela identificação dos tipos de cálculos
+        //Variável responsável pela identificação dos tipos de cálculos
 
         bool press = false;
         bool notpress = true;
