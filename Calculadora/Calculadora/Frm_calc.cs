@@ -824,7 +824,7 @@ namespace Calculadora
                 case "ADICAO":
                     valor1 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
                     valor2 = double.Parse(Lbl_resultado);
-                    resultado = valor1 + valor2;
+                    resultado = valor2 + valor1;
                     return resultado;
                 case "SUBTRACAO":
                     valor1 = double.Parse(Lbl_resultado);
