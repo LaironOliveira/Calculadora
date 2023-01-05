@@ -13,11 +13,11 @@ namespace Calculadora
 
         string tipoOperacao = "";
         string operacaoPassada = "";
-        //Variável responsávle pela identificação dos ipos de cálculos
+        //Variável responsávle pela identificação dos tipos de cálculos
 
         bool press = false;
         bool notpress = true;
-        //Variáveis responsáveis por identificar se aldum botão numérico foi pressionado.
+        //Variáveis responsáveis por identificar se algum botão numérico foi pressionado.
 
         double valor=0;
         //Variável responsável por armazenar o valor da operação
