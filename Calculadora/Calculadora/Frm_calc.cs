@@ -1,6 +1,7 @@
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 
 namespace Calculadora
 {
@@ -37,7 +38,7 @@ namespace Calculadora
                 press = true;
                 notpress= false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "0";
             }
@@ -52,7 +53,7 @@ namespace Calculadora
                 press = true;
                 notpress= false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "1";
             }
@@ -67,7 +68,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "2";
             }
@@ -82,7 +83,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "3";
             }
@@ -97,7 +98,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "4";
             }
@@ -112,7 +113,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "5";
             }
@@ -127,7 +128,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "6";
             }
@@ -142,7 +143,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "7";
             }
@@ -157,7 +158,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "8";
             }
@@ -172,7 +173,7 @@ namespace Calculadora
                 press = true;
                 notpress = false;
             }
-            else
+            else if (Lbl_resultado.Text.Length < 14)
             {
                 Lbl_resultado.Text += "9";
             }
@@ -197,7 +198,10 @@ namespace Calculadora
         // Botão que adiciona uma vírgula (Funciona apenas se o windows utilizado for da versão Pt-BR ABNT2)
         private void Btn_virgula_Click(object sender, EventArgs e)
         {
-            Lbl_resultado.Text += ",";
+            if (Lbl_resultado.Text.Contains(",") == false)
+            {
+                Lbl_resultado.Text += ",";
+            }
         }
 
         //Botão responsável por limpar todas as informações da calculadora
@@ -222,8 +226,7 @@ namespace Calculadora
         {
             if (Lbl_resultado.Text.Length > 1)
             {
-                int apaga = Lbl_resultado.Text.Length - (Lbl_resultado.Text.Length - 1);
-                Lbl_resultado.Text = Lbl_resultado.Text.Remove((Lbl_resultado.Text.Length - 1), apaga);
+                Lbl_resultado.Text = Lbl_resultado.Text.Remove((Lbl_resultado.Text.Length - 1), 1);
             }
             else
             {
@@ -231,6 +234,8 @@ namespace Calculadora
             }
         }
 
+        // Alterar o código visando descartar inúteis
+        //
         // Botão que realiza a operação de adição
         private void Btn_adicao_Click(object sender, EventArgs e)
         {
@@ -268,9 +273,7 @@ namespace Calculadora
                     operacaoPassada = "";
                     Lbl_operacao_passada.Text = " ";
                     tipoOperacao = "ADICAO";
-                    Lbl_calculando.Text = "0 + ";
-                    double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = result.ToString() + " + ";
+                    Lbl_calculando.Text = Lbl_resultado.Text + " + ";
                 }
             }
             else if (Lbl_calculando.Text == " ")
@@ -545,51 +548,32 @@ namespace Calculadora
         // Botão que realiza a operação de raiz quadrada
         private void Btn_raiz_quadrada_Click(object sender, EventArgs e)
         {
-            if (tipoOperacao != "RAIZ" && tipoOperacao != "" && tipoOperacao != "POTENCIA" && tipoOperacao != "FRACAO")
+            double resultado;
+            if (tipoOperacao != "RAIZ" && tipoOperacao != "")
             {
                 operacaoPassada = tipoOperacao;
                 Lbl_operacao_passada.Text = Lbl_calculando.Text;
+                if (tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA")
+                {
+                    Lbl_calculando.Text = Lbl_resultado.Text;
+                }
                 tipoOperacao = "RAIZ";
-                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                 Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
-                Lbl_resultado.Text = resultado.ToString("N2");
+                Lbl_resultado.Text = resultado.ToString();
                 valor = resultado;
             }
-            else if (tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
-            {
-                if (notpress == true)
-                {
-                    operacaoPassada = "";
-                    Lbl_operacao_passada.Text = " ";
-                    operacaoPassada = tipoOperacao;
-                    Lbl_operacao_passada.Text = Lbl_calculando.Text;
-                    Lbl_calculando.Text = "sqrt(" + valor.ToString("N2") + ")";
-                    tipoOperacao = "RAIZ";
-                    double resultado = Calcular(Lbl_calculando.Text, valor.ToString(), tipoOperacao);
-                    Lbl_resultado.Text = resultado.ToString("N2");
-                    valor = resultado;
-                }
-                else
-                {
-                    operacaoPassada = "";
-                    Lbl_operacao_passada.Text = " ";
-                    tipoOperacao = "RAIZ";
-                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
-                    Lbl_resultado.Text = resultado.ToString("N2");
-                    valor = resultado;
-                }
-            }
+            
             else
             {
                 tipoOperacao = "RAIZ";
-                double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
                 Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
-                Lbl_resultado.Text = resultado.ToString("N2");
+                resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                Lbl_resultado.Text = resultado.ToString();
                 valor = resultado;
+                sub = true;
+                notpress = true;
             }
-            sub = true;
-            notpress = true;
         }
 
         //Botão responsável pela operação de elevar um número a segunda potência
@@ -752,9 +736,7 @@ namespace Calculadora
                     switch (operacaoPassada)
                     {
                         case "ADICAO":
-                            calc = double.Parse(Lbl_operacao_passada.Text.Replace('+', ' ').Trim()) + valor;
-                            Lbl_calculando.Text += " =";
-                            Lbl_resultado.Text = calc.ToString();
+                            calc = Calcular(Lbl_operacao_passada.Text, Lbl_resultado.Text, "ADICAO");
                             break;
                         case "SUBTRACAO":
                             calc = double.Parse(Lbl_operacao_passada.Text.Replace('-', ' ').Trim()) - valor;
@@ -802,7 +784,14 @@ namespace Calculadora
             else
             {
                 double result = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                Lbl_calculando.Text += Lbl_resultado.Text + " =";
+                if(double.Parse(Lbl_resultado.Text) < 0)
+                {
+                    Lbl_calculando.Text += "negate(" + Lbl_resultado.Text + ") =";
+                }
+                else
+                {
+                    Lbl_calculando.Text += Lbl_resultado.Text + " =";
+                }
                 Lbl_resultado.Text = result.ToString();
                 Lbl_operacao_passada.Text = " ";
             }
@@ -814,48 +803,53 @@ namespace Calculadora
         }
 
         //Função responsável pelos Cálculos.
-        public double Calcular(string Lbl_calculando, string Lbl_resultado, string operacao)
+        public double Calcular(string value1, string value2, string operacao)
         {
-            double valor1;
-            double valor2;
+            double valor1 = GetValor(value1);
+            double valor2 = double.Parse(value2);
             double resultado;
             switch (operacao)
             {
-                case "ADICAO":
-                    valor1 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
-                    valor2 = double.Parse(Lbl_resultado);
-                    resultado = valor2 + valor1;
+                case "ADICAO":             
+                    resultado = valor1 + valor2;
                     return resultado;
                 case "SUBTRACAO":
-                    valor1 = double.Parse(Lbl_resultado);
-                    valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
-                    resultado = valor2 - valor1;
+                    resultado = valor1 - valor2;
                     return resultado;
                 case "MULTIPLICACAO":
-                    valor1 = double.Parse(Lbl_resultado);
-                    valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
-                    resultado = valor2 * valor1;
+                    resultado = valor1 * valor2;
                     return resultado;
                 case "DIVISAO":
-                    valor1 = double.Parse(Lbl_resultado);
-                    valor2 = double.Parse(Lbl_calculando.Remove((Lbl_calculando.Length - 2), 2).Trim());
-                    resultado = valor2 / valor1;
+                    resultado = valor1 / valor2;
                     return resultado;
                 case "RAIZ":
-                    resultado = Math.Sqrt(double.Parse(Lbl_resultado));
+                    resultado = Math.Sqrt(valor2);
                     return resultado;
                 case "POTENCIA":
-                    valor1 = double.Parse(Lbl_resultado);
-                    resultado = Math.Pow(valor1, 2);
+                    resultado = Math.Pow(valor2, 2);
                     return resultado;
                 case "FRACAO":
-                    valor1 = double.Parse(Lbl_resultado);
-                    resultado = 1 / valor1;
+                    resultado = 1 / valor2;
                     return resultado;
                 default:
-                    MessageBox.Show("Insira uma operação válida", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return 0;
+                    return -1;
             }
+        }
+
+        public double GetValor(string valorASerLimpo)
+        {
+            double resultado;
+            string pattern = "[0-9,]{1,15}";
+            Match valorlimpo = Regex.Match(valorASerLimpo, pattern);
+            if (valorlimpo.Value.EndsWith(",") == true)
+            {
+                resultado = double.Parse(valorlimpo.Value.Replace(',', ' ').Trim());
+            }
+            else
+            {
+                resultado = double.Parse(valorlimpo.Value);
+            }
+            return resultado;
         }
     }
 }
