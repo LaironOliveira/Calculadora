@@ -28,152 +28,52 @@ namespace Calculadora
         // Botões numéricos.
         private void Btn_zero_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "0";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "0";
-            }
+            Number(0);
         }
 
         private void Btn_um_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "1";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "1";
-            }
+            Number(1);
         }
 
         private void Btn_dois_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "2";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "2";
-            }
+            Number(2);
         }
 
         private void Btn_tres_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "3";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "3";
-            }
+            Number(3);
         }
 
         private void Btn_quatro_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "4";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "4";
-            }
+            Number(4);
         }
 
         private void Btn_cinco_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "5";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "5";
-            }
+            Number(5);
         }
 
         private void Btn_seis_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "6";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "6";
-            }
+            Number(6);
         }
 
         private void Btn_sete_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "7";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "7";
-            }
+            Number(7);
         }
 
         private void Btn_oito_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "8";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "8";
-            }
+            Number(8);
         }
 
         private void Btn_nove_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text == "0" || sub == true)
-            {
-                Lbl_resultado.Text = "9";
-                sub = false;
-                press = true;
-                Substituir();
-            }
-            else if (Lbl_resultado.Text.Length < 14)
-            {
-                Lbl_resultado.Text += "9";
-            }
+            Number(9);
         }
 
         // Botão de inversão de sinal dos números digitados.
@@ -182,26 +82,33 @@ namespace Calculadora
             double num = GetValor(Lbl_resultado.Text);
             if (num > 0)
             {
-                if (Lbl_calculando.Text.Contains(")"))
+                if (Lbl_calculando.Text.Contains(')'))
                 {
                     string operacao = GetSignal(Lbl_calculando.Text);
-                    if (Lbl_calculando.Text.Contains(operacao))
+                    if (Lbl_calculando.Text.Contains(operacao) && Lbl_calculando.Text.EndsWith(')'))
                     {
-                        int index = Lbl_calculando.Text.IndexOf(operacao);
-                        string substituta = Lbl_calculando.Text.Substring(index + 2);
-                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(index + 2);
+                        int index = Lbl_calculando.Text.IndexOf(operacao) + 2;
+                        string substituta = Lbl_calculando.Text.Substring(index);
+                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(index);
                         Lbl_calculando.Text += "negative(" + substituta + ")";
+                        valor *= (-1);
+                    }
+                    else if (Lbl_calculando.Text.Contains(operacao) == false)
+                    {
+                        Lbl_calculando.Text = "negative(" + Lbl_calculando.Text + ")";
+                        valor *= (-1);
                     }
                     else
                     {
-                        Lbl_calculando.Text = "negative(" + Lbl_calculando.Text + ")";
+                        Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
                     }
                 }
                 else
                 {
                     press = true;
                 }
-                Lbl_resultado.Text = "-" + num;
+                num *= (-1);
+                Lbl_resultado.Text = num.ToString();
             }
             else
             {
@@ -224,7 +131,6 @@ namespace Calculadora
         {
             Lbl_resultado.Text = "0";
             Lbl_calculando.Text = " ";
-            sub = false;
             tipoOperacao = "";
         }
 
@@ -232,6 +138,11 @@ namespace Calculadora
         private void Btn_limpar_resultado_Click(object sender, EventArgs e)
         {
             Lbl_resultado.Text = "0";
+            if (Lbl_calculando.Text.EndsWith("="))
+            {
+                Lbl_calculando.Text = " ";
+                tipoOperacao = "";
+            }
         }
 
         // Botão responsável por apagar os números digitados de maneira unitária.
@@ -278,7 +189,7 @@ namespace Calculadora
                     string operacao = GetSignal(Lbl_calculando.Text);
                     if (Lbl_calculando.Text.Contains(operacao))
                     {
-                        OperaCaoPassada("+");
+                        RealizarOperacao("+");
                         tipoOperacao = "ADICAO";  
                     }
                     else
@@ -353,7 +264,7 @@ namespace Calculadora
                     string operacao = GetSignal(Lbl_calculando.Text);
                     if (Lbl_calculando.Text.Contains(operacao))
                     {
-                        OperaCaoPassada("-");
+                        RealizarOperacao("-");
                         tipoOperacao = "SUBTRACAO";
                     }
                     else
@@ -428,7 +339,7 @@ namespace Calculadora
                     string operacao = GetSignal(Lbl_calculando.Text);
                     if (Lbl_calculando.Text.Contains(operacao))
                     {
-                        OperaCaoPassada("x");
+                        RealizarOperacao("x");
                         tipoOperacao = "MULTIPLICACAO";
                     }
                     else
@@ -513,7 +424,7 @@ namespace Calculadora
                     string operacao = GetSignal(Lbl_calculando.Text);
                     if (Lbl_calculando.Text.Contains(operacao))
                     {
-                        OperaCaoPassada("÷");
+                        RealizarOperacao("÷");
                         tipoOperacao = "DIVISAO";
                     }
                     else
@@ -826,10 +737,15 @@ namespace Calculadora
         {
             string pattern = "[+x÷-][ ]";
             Match v = Regex.Match(valor, pattern);
-            return v.Value;
+            string resultado = v.Value;
+            if (resultado == "")
+            {
+                resultado = "!";
+            }
+            return resultado;
         }
 
-        public void OperaCaoPassada(string sinalOperacaoAtual)
+        public void RealizarOperacao(string sinalOperacaoAtual)
         {
             string operacao = GetSignal(Lbl_calculando.Text);
             double resultado;
@@ -898,8 +814,15 @@ namespace Calculadora
             if (Lbl_calculando.Text.EndsWith(")") == true)
             {
                 string operacao = GetSignal(Lbl_calculando.Text);
-                int index = Lbl_calculando.Text.IndexOf(operacao) + 2;
-                Lbl_calculando.Text = Lbl_calculando.Text.Remove(index);
+                if (Lbl_calculando.Text.Contains(operacao))
+                {
+                    int index = Lbl_calculando.Text.IndexOf(operacao) + 2;
+                    Lbl_calculando.Text = Lbl_calculando.Text.Remove(index);
+                }
+                else
+                {
+                    Lbl_calculando.Text = " ";
+                }
                 switch (operacao)
                 {
                     case "+ ":
@@ -914,7 +837,29 @@ namespace Calculadora
                     case "÷ ":
                         tipoOperacao = "DIVISAO";
                         break;
+                    default:
+                        tipoOperacao = "";
+                        break;
                 }
+            }
+        }
+
+        public void Number(int num)
+        {
+            if (Lbl_resultado.Text == "0" || sub == true)
+            {
+                if (Lbl_calculando.Text.EndsWith("="))
+                {
+                    Lbl_calculando.Text = " ";
+                }
+                Lbl_resultado.Text = num.ToString();
+                sub = false;
+                press = true;
+                Substituir();
+            }
+            else if (Lbl_resultado.Text.Length < 14)
+            {
+                Lbl_resultado.Text += num.ToString();
             }
         }
     }
