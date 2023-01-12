@@ -1,6 +1,7 @@
 using System;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
@@ -83,7 +84,7 @@ namespace Calculadora
         {
             int index;
             string substituta;
-            double num = GetValor(Lbl_resultado.Text);
+            double num = GetValue(Lbl_resultado.Text);
             string operacao = GetSignal(Lbl_calculando.Text);
             if (Lbl_calculando.Text.Contains("negative") == false)
             {
@@ -108,6 +109,8 @@ namespace Calculadora
                     }
                     else
                     {
+                        index = Lbl_calculando.Text.IndexOf(operacao);
+                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(index + 2);
                         Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
                     }
                 }
@@ -128,7 +131,7 @@ namespace Calculadora
                     substituta = Lbl_calculando.Text.Substring(index);
                     Lbl_calculando.Text = Lbl_calculando.Text.Remove(Lbl_calculando.Text.IndexOf(operacao) + 2);
                     Lbl_calculando.Text += substituta;
-                    if (tipoOperacao == "RAIZ" || tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA")
+                    if (Lbl_calculando.Text.EndsWith(')'))
                     {
                         valor *= (-1);
                     }
@@ -183,314 +186,61 @@ namespace Calculadora
             }
         }
 
-        // Botão que realiza a operação de adição.
-        private void Btn_adicao_Click(object sender, EventArgs e)
+        // Botão responsável pela operação de porcentagem.
+        private void Btn_porcentagem_Click(object sender, EventArgs e)
         {
-            if (Lbl_calculando.Text.EndsWith("=") == true)
+            double valor1;
+            double valor2;
+            double resultado;
+            if (Lbl_calculando.Text != " " && tipoOperacao != "FRACAO" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
             {
-                Lbl_calculando.Text = Lbl_resultado.Text + " + ";
-            }
-            else if (tipoOperacao == "ADICAO" || tipoOperacao == "")
-            {
-                if (Lbl_calculando.Text == " ")
+                if (Lbl_calculando.Text.EndsWith("="))
                 {
-                    tipoOperacao = "ADICAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " + ";
+                    valor1 = GetValue(Lbl_resultado.Text);
+                    resultado = valor1 * (valor1 / 100);
+                    Lbl_calculando.Text = resultado.ToString();
+                    Lbl_resultado.Text = resultado.ToString();
                 }
                 else
                 {
-                    if (press == true)
-                    {
-                        double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " + ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
+                    valor1 = GetValue(Lbl_calculando.Text);
+                    valor2 = GetValue(Lbl_resultado.Text);
+                    resultado = valor1 * (valor2 / 100);
+                    Lbl_resultado.Text = resultado.ToString();
                 }
-            }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
-            {
-                if (press == false && Lbl_calculando.Text.EndsWith("+ ") == false)
-                {
-                    string operacao = GetSignal(Lbl_calculando.Text);
-                    if (Lbl_calculando.Text.Contains(operacao))
-                    {
-                        RealizarOperacao("+");
-                        tipoOperacao = "ADICAO";  
-                    }
-                    else
-                    {
-                        Lbl_calculando.Text += " + ";
-                        valor = GetValor(Lbl_resultado.Text);
-                    }
-                }
-                else if (Lbl_calculando.Text.EndsWith("+ ") == true)
-                {
-                    if (press == true)
-                    {
-                        tipoOperacao = "ADICAO";
-                        double resultado = Calcular(valor.ToString(), Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " + ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
-                }
-                else
-                {
-                    tipoOperacao = "ADICAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " + ";
-                }
+                press = true;
             }
             else
             {
-                if (press == true)
-                {
-                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = resultado.ToString() + " + ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    tipoOperacao = "ADICAO";
-                }
-                else
-                {
-                    Lbl_calculando.Text = Lbl_calculando.Text.Replace('-', '+').Replace('x', '+').Replace('÷', '+');
-                    tipoOperacao = "ADICAO";
-                }
+                Lbl_calculando.Text = " ";
+                Lbl_resultado.Text = "0";
+                tipoOperacao = "";
             }
             sub = true;
-            press = false;
+        }
+
+        // Botão que realiza a operação de adição.
+        private void Btn_adicao_Click(object sender, EventArgs e)
+        {
+            CreateBasicOperationButton("ADICAO", '+');
         }
 
         //Botão que realiza a operação de subtração.
         private void Btn_subtracao_Click(object sender, EventArgs e)
         {
-            if (Lbl_calculando.Text.EndsWith("=") == true)
-            {
-                Lbl_calculando.Text = Lbl_resultado.Text + " - ";
-            }
-            else if (tipoOperacao == "SUBTRACAO" || tipoOperacao == "")
-            {
-                if (Lbl_calculando.Text == " ")
-                {
-                    tipoOperacao = "SUBTRACAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " - ";
-                }
-                else
-                {
-                    if (press == true)
-                    {
-                        double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
-                }
-            }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
-            {
-                if (press == false && Lbl_calculando.Text.EndsWith("- ") == false)
-                {
-                    string operacao = GetSignal(Lbl_calculando.Text);
-                    if (Lbl_calculando.Text.Contains(operacao))
-                    {
-                        RealizarOperacao("-");
-                        tipoOperacao = "SUBTRACAO";
-                    }
-                    else
-                    {
-                        Lbl_calculando.Text += " - ";
-                        valor = GetValor(Lbl_resultado.Text);
-                    }
-                }
-                else if (Lbl_calculando.Text.EndsWith("- ") == true)
-                {
-                    if (press == true)
-                    {
-                        tipoOperacao = "SUBTRACAO";
-                        double resultado = Calcular(valor.ToString(), Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " - ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
-                }
-                else
-                {
-                    tipoOperacao = "SUBTRACAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " - ";
-                }
-            }
-            else
-            {
-                if (press == true)
-                {
-                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = resultado.ToString() + " - ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    tipoOperacao = "SUBTRACAO";
-                }
-                else
-                {
-                    Lbl_calculando.Text = Lbl_calculando.Text.Replace('+', '-').Replace('x', '-').Replace('÷', '-');
-                    tipoOperacao = "SUBTRACAO";
-                }
-            }
-            sub = true;
-            press = false;
+            CreateBasicOperationButton("SUBTRACAO", '-');
         }
 
         //Botão que realiza a operação de multiplicação.
         private void Btn_multiplicacao_Click(object sender, EventArgs e)
         {
-            if (Lbl_calculando.Text.EndsWith("=") == true)
-            {
-                Lbl_calculando.Text = Lbl_resultado.Text + " x ";
-            }
-            else if (tipoOperacao == "MULTIPLICACAO" || tipoOperacao == "")
-            {
-                if (Lbl_calculando.Text == " ")
-                {
-                    tipoOperacao = "MULTIPLICACAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " x ";
-                }
-                else
-                {
-                    if (press == true)
-                    {
-                        double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
-                }
-            }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
-            {
-                if (press == false && Lbl_calculando.Text.EndsWith("x ") == false)
-                {
-                    string operacao = GetSignal(Lbl_calculando.Text);
-                    if (Lbl_calculando.Text.Contains(operacao))
-                    {
-                        RealizarOperacao("x");
-                        tipoOperacao = "MULTIPLICACAO";
-                    }
-                    else
-                    {
-                        Lbl_calculando.Text += " x ";
-                        valor = GetValor(Lbl_resultado.Text);
-                    }
-                }
-                else if (Lbl_calculando.Text.EndsWith("x ") == true)
-                {
-                    if (press == true)
-                    {
-                        tipoOperacao = "MULTIPLICACAO";
-                        double resultado = Calcular(valor.ToString(), Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " x ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
-                }
-                else
-                {
-                    tipoOperacao = "MULTIPLICACAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " x ";
-                }
-            }
-            else
-            {
-                if (press == true)
-                {
-                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = resultado.ToString() + " x ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    tipoOperacao = "MULTIPLICACAO";
-                }
-                else
-                {
-                    Lbl_calculando.Text = Lbl_calculando.Text.Replace('+', 'x').Replace('-', 'x').Replace('÷', 'x');
-                    tipoOperacao = "MULTIPLICACAO";
-                }
-            }
-            sub = true;
-            press = false;
+            CreateBasicOperationButton("MULTIPLICACAO", 'x');
         }
 
         // Botão que realiza a operação de divisão.
         private void Btn_divisao_Click(object sender, EventArgs e)
         {
-            if (Lbl_calculando.Text.EndsWith("=") == true)
-            {
-                Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
-            }
-            else if (tipoOperacao == "DIVISAO" || tipoOperacao == "")
-            {
-                if (Lbl_calculando.Text == " ")
-                {
-                    tipoOperacao = "DIVISAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
-                }
-                else
-                {
-                    if (press == true)
-                    {
-                        if (GetValor(Lbl_resultado.Text) == 0)
-                        {
-                            MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Lbl_calculando.Text = " ";
-                            Lbl_resultado.Text = "0";
-                            tipoOperacao = "";
-                        }
-                        else
-                        {
-                            double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                            Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                            Lbl_resultado.Text = resultado.ToString();
-                        }
-                    }
-                }
-            }
-            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
-            {
-                if (press == false && Lbl_calculando.Text.EndsWith("÷ ") == false)
-                {
-                    string operacao = GetSignal(Lbl_calculando.Text);
-                    if (Lbl_calculando.Text.Contains(operacao))
-                    {
-                        RealizarOperacao("÷");
-                        tipoOperacao = "DIVISAO";
-                    }
-                    else
-                    {
-                        Lbl_calculando.Text += " ÷ ";
-                        valor = GetValor(Lbl_resultado.Text);
-                    }
-                }
-                else if (Lbl_calculando.Text.EndsWith("÷ ") == true)
-                {
-                    if (press == true)
-                    {
-                        tipoOperacao = "DIVISAO";
-                        double resultado = Calcular(valor.ToString(), Lbl_resultado.Text, tipoOperacao);
-                        Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                        Lbl_resultado.Text = resultado.ToString();
-                    }
-                }
-                else
-                {
-                    tipoOperacao = "DIVISAO";
-                    Lbl_calculando.Text = Lbl_resultado.Text + " ÷ ";
-                }
-            }
-            else
-            {
-                if (press == true)
-                {
-                    double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
-                    Lbl_calculando.Text = resultado.ToString() + " ÷ ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    tipoOperacao = "DIVISAO";
-                }
-                else
-                {
-                    Lbl_calculando.Text = Lbl_calculando.Text.Replace('+', '÷').Replace('-', '÷').Replace('x', '÷');
-                    tipoOperacao = "DIVISAO";
-                }
-            }
-            sub = true;
-            press = false;
+            CreateBasicOperationButton("DIVISAO", '÷');
         }
 
         // Continuar o desenvolvimento das condicionais de cálculo entre as operações de Radiciação, Fração e Potenciação.
@@ -515,7 +265,7 @@ namespace Calculadora
                     Lbl_calculando.Text += "sqrt(" + Lbl_resultado.Text + ")";
                 }
                 tipoOperacao = "RAIZ";
-                resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                resultado = Calcular(Lbl_resultado.Text, tipoOperacao);
                 Lbl_resultado.Text = resultado.ToString();
                 valor = resultado;
             }
@@ -543,7 +293,7 @@ namespace Calculadora
                     Lbl_calculando.Text += "sqr(" + Lbl_resultado.Text + ")";
                 }
                 tipoOperacao = "POTENCIA";
-                resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                resultado = Calcular(Lbl_resultado.Text, tipoOperacao);
                 Lbl_resultado.Text = resultado.ToString();
                 valor = resultado;
             }
@@ -570,7 +320,7 @@ namespace Calculadora
                 {
                     Lbl_calculando.Text += "1/(" + Lbl_resultado.Text + ")";
                 }
-                if (GetValor(Lbl_resultado.Text) == 0)
+                if (GetValue(Lbl_resultado.Text) == 0)
                 {
                     MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Lbl_calculando.Text = " ";
@@ -580,46 +330,13 @@ namespace Calculadora
                 else
                 {
                     tipoOperacao = "FRACAO";
-                    resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                    resultado = Calcular(Lbl_resultado.Text, tipoOperacao);
                     Lbl_resultado.Text = resultado.ToString();
                     valor = resultado;
                 }
             }
             sub = true;
             press = false;
-        }
-
-        // Botão responsável pela operação de porcentagem.
-        private void Btn_porcentagem_Click(object sender, EventArgs e)
-        {
-            double valor1;
-            double valor2;
-            double resultado;
-            if (Lbl_calculando.Text != " " && tipoOperacao != "FRACAO" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
-            {
-                if (Lbl_calculando.Text.EndsWith("="))
-                {
-                    valor1 = GetValor(Lbl_resultado.Text);
-                    resultado = valor1 * (valor1 / 100);
-                    Lbl_calculando.Text = resultado.ToString();
-                    Lbl_resultado.Text = resultado.ToString();
-                }
-                else
-                {
-                    valor1 = GetValor(Lbl_calculando.Text);
-                    valor2 = GetValor(Lbl_resultado.Text);
-                    resultado = valor1 * (valor2 / 100);
-                    Lbl_resultado.Text = resultado.ToString();
-                }
-                press = true;
-            }
-            else
-            {
-                Lbl_calculando.Text = " ";
-                Lbl_resultado.Text = "0";
-                tipoOperacao = "";
-            }
-            sub = true;
         }
         
         // Implementar função para que quanto for pressionado o botão, seja sempre realizado a última operação disponível.
@@ -757,11 +474,103 @@ namespace Calculadora
             tipoOperacao = "";
         }
 
+        public void CreateBasicOperationButton(string operation, char signal) 
+        {
+            if (Lbl_calculando.Text.EndsWith('='))
+            {
+                Lbl_calculando.Text = Lbl_resultado.Text + " " + signal + " ";
+            }
+            else if (tipoOperacao == "RAIZ" || tipoOperacao == "POTENCIA" || tipoOperacao == "FRACAO")
+            {
+                if (Lbl_calculando.Text.EndsWith(signal + " ") == false)
+                {
+                    string operacao = GetSignal(Lbl_calculando.Text);
+                    if (Lbl_calculando.Text.Contains(operacao))
+                    {
+                        if (press == true || Lbl_calculando.Text.EndsWith(')'))
+                        {
+                            SolveLastOperationAndTurn(signal);
+                            tipoOperacao = operation;
+                        }
+                        else
+                        {
+                            ChangeOperationTo(signal);
+                        }
+                    }
+                    else
+                    {
+                        Lbl_calculando.Text += " " + signal + " ";
+                        valor = GetValue(Lbl_resultado.Text);
+                    }
+                }
+                else if (Lbl_calculando.Text.EndsWith(signal + " ") && press == true)
+                {
+                    if (operation == "DIVISAO" && GetValue(Lbl_resultado.Text) == 0)
+                    {
+                        MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Lbl_calculando.Text = " ";
+                        Lbl_resultado.Text = "0";
+                    }
+                    else
+                    {
+                        tipoOperacao = operation;
+                        double resultado = Calcular(valor.ToString(), Lbl_resultado.Text, tipoOperacao);
+                        Lbl_calculando.Text = resultado.ToString() + " " + signal + " ";
+                        Lbl_resultado.Text = resultado.ToString();
+                    }
+                }
+            }
+            else
+            {
+                if (Lbl_calculando.Text == " ")
+                {
+                    tipoOperacao = operation;
+                    Lbl_calculando.Text = Lbl_resultado.Text + " " + signal + " ";
+                }
+                else
+                {
+                    if (press == true || Lbl_calculando.Text.Contains("negative"))
+                    {
+                        if (operation == "DIVISAO" && GetValue(Lbl_resultado.Text) == 0)
+                        {
+                            MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Lbl_calculando.Text = " ";
+                            Lbl_resultado.Text = "0";
+                        }
+                        else
+                        {
+                            double resultado = Calcular(Lbl_calculando.Text, Lbl_resultado.Text, tipoOperacao);
+                            Lbl_calculando.Text = resultado.ToString() + " " + signal + " ";
+                            Lbl_resultado.Text = resultado.ToString();
+                            tipoOperacao = operation;
+                        }
+                    }
+                    else
+                    {
+                        ChangeOperationTo(signal);
+                        tipoOperacao = operation;
+                    }
+                }
+            }
+            sub = true;
+            press = false;
+        }
+
         //Função responsável pelos Cálculos.
         public double Calcular(string value1, string value2, string operacao)
         {
-            double valor1 = GetValor(value1);
-            double valor2 = GetValor(value2);
+            double valor1;
+            if (value1.Contains("negative"))
+            {
+                string sinal = GetSignal(Lbl_calculando.Text);
+                string substring = Lbl_calculando.Text.Remove(Lbl_calculando.Text.IndexOf(sinal));
+                valor1 = GetValue(substring);
+            }
+            else
+            {
+                valor1 = GetValue(value1);
+            }
+            double valor2 = GetValue(value2);
             double resultado;
             switch (operacao)
             {
@@ -777,22 +586,137 @@ namespace Calculadora
                 case "DIVISAO":
                     resultado = valor1 / valor2;
                     return resultado;
+                
+                default:
+                    return -1;
+            }
+        }
+
+        public double Calcular(string value, string operacao)
+        {
+            double valor = GetValue(value);
+            double resultado;
+            switch (operacao)
+            {
                 case "RAIZ":
-                    resultado = Math.Sqrt(valor2);
+                    resultado = Math.Sqrt(valor);
                     return resultado;
                 case "POTENCIA":
-                    resultado = Math.Pow(valor2, 2);
+                    resultado = Math.Pow(valor, 2);
                     return resultado;
                 case "FRACAO":
-                    resultado = 1 / valor2;
+                    resultado = 1 / valor;
                     return resultado;
                 default:
                     return -1;
             }
         }
 
-        //Função que faz a limpeza dos valores da label
-        public double GetValor(string valorASerLimpo)
+        // Função responsável por realizar a última operação pendente.
+        // Utilizado quando tratamos das operações de Radiciação, Potenciação e Fração, pois necessitam de um tratamento particular.
+        public void SolveLastOperationAndTurn(char operation)
+        {
+            string lastOperation = GetSignal(Lbl_calculando.Text);
+            double resultado;
+            int index;
+            string substring;
+            switch (lastOperation)
+            {
+                case "+ ":
+                    index = Lbl_calculando.Text.IndexOf(lastOperation);
+                    substring = Lbl_calculando.Text.Substring(index);
+                    if (substring.Contains("negative"))
+                    {
+                        substring = Lbl_calculando.Text.Substring(index + 11);
+                        substring = substring.Remove(substring.Length - 1);
+                    }
+                    if (substring.EndsWith(')') == true)
+                    {
+                        index = Lbl_calculando.Text.IndexOf("+ ");
+                        string numeroASerAcrescido = Lbl_calculando.Text.Remove(index);
+                        resultado = Calcular(numeroASerAcrescido, valor.ToString(), "ADICAO");
+                    }
+                    else
+                    {
+                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "ADICAO");
+                    }
+                    Lbl_calculando.Text = resultado.ToString() + " " + operation + " ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    break;
+                case "- ":
+                    index = Lbl_calculando.Text.IndexOf(lastOperation);
+                    substring = Lbl_calculando.Text.Substring(index);
+                    if (substring.Contains("negative"))
+                    {
+                        substring = Lbl_calculando.Text.Substring(index + 11);
+                        substring = substring.Remove(substring.Length - 1);
+                    }
+                    if (substring.EndsWith(')') == true)
+                    {
+                        index = Lbl_calculando.Text.IndexOf("- ");
+                        string numeroASerSubtraido = Lbl_calculando.Text.Remove(index);
+                        resultado = Calcular(numeroASerSubtraido, valor.ToString(), "SUBTRACAO");
+                    }
+                    else
+                    {
+                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "SUBTRACAO");
+                    }
+                    Lbl_calculando.Text = resultado.ToString() + " " + operation + " ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    break;
+                case "x ":
+                    index = Lbl_calculando.Text.IndexOf(lastOperation);
+                    substring = Lbl_calculando.Text.Substring(index);
+                    if (substring.Contains("negative"))
+                    {
+                        substring = Lbl_calculando.Text.Substring(index + 11);
+                        substring = substring.Remove(substring.Length - 1);
+                    }
+                    if (substring.EndsWith(')') == true)
+                    {
+                        index = Lbl_calculando.Text.IndexOf("x ");
+                        string numeroASerMultiplicado = Lbl_calculando.Text.Remove(index);
+                        resultado = Calcular(numeroASerMultiplicado, valor.ToString(), "MULTIPLICACAO");
+                    }
+                    else
+                    {
+                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "MULTIPLICACAO");
+                    }
+                    Lbl_calculando.Text = resultado.ToString() + " " + operation + " ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    break;
+                case "÷ ":
+                    index = Lbl_calculando.Text.IndexOf(lastOperation);
+                    substring = Lbl_calculando.Text.Substring(index);
+                    if (substring.Contains("negative"))
+                    {
+                        substring = Lbl_calculando.Text.Substring(index + 11);
+                        substring = substring.Remove(substring.Length - 1);
+                    }
+                    if (substring.EndsWith(')') == true)
+                    {
+                        index = Lbl_calculando.Text.IndexOf("÷ ");
+                        string dividendo = Lbl_calculando.Text.Remove(index);
+                        resultado = Calcular(dividendo, valor.ToString(), "DIVISAO");
+                    }
+                    else
+                    {
+                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "DIVISAO");
+                    }
+                    Lbl_calculando.Text = resultado.ToString() + " " + operation + " ";
+                    Lbl_resultado.Text = resultado.ToString();
+                    break;
+            }
+        }
+
+        // Função responsável por alterar o sinal da operação.
+        public void ChangeOperationTo(char operation) 
+        {
+            Lbl_calculando.Text = Lbl_calculando.Text.Replace('-', operation).Replace('x', operation).Replace('÷', operation).Replace('+', operation);
+        }
+
+        //Função que faz a limpeza dos valores da label.
+        public double GetValue(string valorASerLimpo)
         {
             double resultado;
             string pattern = "[0-9,-]{1,16}";
@@ -801,7 +725,7 @@ namespace Calculadora
             return resultado;
         }
 
-        // Função responsável por captar o símbolo da operação
+        // Função responsável por captar o símbolo da operação.
         public string GetSignal(string valor)
         {
             string pattern = "[+x÷-][ ]";
@@ -814,74 +738,8 @@ namespace Calculadora
             return resultado;
         }
 
-        // Função responsável por realizar a última operação pendente ao pressionar um botão de operação básica
-        public void RealizarOperacao(string sinalOperacaoAtual)
-        {
-            string operacao = GetSignal(Lbl_calculando.Text);
-            double resultado;
-            switch (operacao)
-            {
-                case "+ ":
-                    if (Lbl_calculando.Text.EndsWith(")") == true)
-                    {
-                        int index = Lbl_calculando.Text.IndexOf("+ ");
-                        string numeroASerAcrescido = Lbl_calculando.Text.Remove(index);
-                        resultado = Calcular(numeroASerAcrescido, valor.ToString(), "ADICAO");
-                    }
-                    else
-                    {
-                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "ADICAO");
-                    }
-                    Lbl_calculando.Text = resultado.ToString() + " " + sinalOperacaoAtual + " ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    break;
-                case "- ":
-                    if (Lbl_calculando.Text.EndsWith(")") == true)
-                    {
-                        int index = Lbl_calculando.Text.IndexOf("- ");
-                        string numeroASerSubtraido = Lbl_calculando.Text.Remove(index);
-                        resultado = Calcular(numeroASerSubtraido, valor.ToString(), "SUBTRACAO");
-                    }
-                    else
-                    {
-                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "SUBTRACAO");
-                    }
-                    Lbl_calculando.Text = resultado.ToString() + " " + sinalOperacaoAtual + " ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    break;
-                case "x ":
-                    if (Lbl_calculando.Text.EndsWith(")") == true)
-                    {
-                        int index = Lbl_calculando.Text.IndexOf("x ");
-                        string numeroASerMultiplicado = Lbl_calculando.Text.Remove(index);
-                        resultado = Calcular(numeroASerMultiplicado, valor.ToString(), "MULTIPLICACAO");
-                    }
-                    else
-                    {
-                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "MULTIPLICACAO");
-                    }
-                    Lbl_calculando.Text = resultado.ToString() + " " + sinalOperacaoAtual + " ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    break;
-                case "÷ ":
-                    if (Lbl_calculando.Text.EndsWith(")") == true)
-                    {
-                        int index = Lbl_calculando.Text.IndexOf("÷ ");
-                        string dividendo = Lbl_calculando.Text.Remove(index);
-                        resultado = Calcular(dividendo, valor.ToString(), "DIVISAO");
-                    }
-                    else
-                    {
-                        resultado = Calcular(valor.ToString(), Lbl_resultado.Text, "DIVISAO");
-                    }
-                    Lbl_calculando.Text = resultado.ToString() + " " + sinalOperacaoAtual + " ";
-                    Lbl_resultado.Text = resultado.ToString();
-                    break;
-            }
-        }
-
         // Função responsável por remover as operações de Radiciação, Potênciação e Fração, caso seu resultado seja alterado.
-        public void Substituir()
+        public void Substitute()
         {
             if (Lbl_calculando.Text.EndsWith(")") == true)
             {
@@ -916,7 +774,7 @@ namespace Calculadora
             }
         }
 
-        // Função responsável por exibir os números quando seu respectivo botão é pressionado
+        // Função responsável por exibir os números quando seu respectivo botão é pressionado.
         public void Number(int num)
         {
             if (Lbl_resultado.Text == "0" || sub == true)
@@ -929,7 +787,7 @@ namespace Calculadora
                 Lbl_resultado.Text = num.ToString();
                 sub = false;
                 press = true;
-                Substituir();
+                Substitute();
             }
             else if (Lbl_resultado.Text.Length < 14)
             {
