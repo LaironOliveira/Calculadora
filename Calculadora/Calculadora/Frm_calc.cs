@@ -121,12 +121,11 @@ namespace Calculadora
                 {
                     if (Lbl_calculando.Text.Contains(operacao) == false)
                     {
-                        index = Lbl_calculando.Text.IndexOf("negative") + 9;
-                        Lbl_calculando.Text = Lbl_calculando.Text.Substring(index);
+                        Lbl_calculando.Text = Lbl_calculando.Text.Substring(9);
                         Lbl_calculando.Text = Lbl_calculando.Text.Remove(Lbl_calculando.Text.Length - 1);
                         valor *= (-1);
                     }
-                    else if (Lbl_calculando.Text.Contains(operacao))
+                    else if (Lbl_calculando.Text.IndexOf(operacao) + 2 < Lbl_calculando.Text.Length)
                     {
                         index = Lbl_calculando.Text.IndexOf(operacao) + 11;
                         Lbl_calculando.Text = Lbl_calculando.Text.Remove(Lbl_calculando.Text.Length - 1);
@@ -231,25 +230,25 @@ namespace Calculadora
         // Botão que realiza a operação de adição.
         private void Btn_adicao_Click(object sender, EventArgs e)
         {
-            CreateBasicOperationButton("ADICAO", '+');
+            BasicOperation("ADICAO", '+');
         }
 
         //Botão que realiza a operação de subtração.
         private void Btn_subtracao_Click(object sender, EventArgs e)
         {
-            CreateBasicOperationButton("SUBTRACAO", '-');
+            BasicOperation("SUBTRACAO", '-');
         }
 
         //Botão que realiza a operação de multiplicação.
         private void Btn_multiplicacao_Click(object sender, EventArgs e)
         {
-            CreateBasicOperationButton("MULTIPLICACAO", 'x');
+            BasicOperation("MULTIPLICACAO", 'x');
         }
 
         // Botão que realiza a operação de divisão.
         private void Btn_divisao_Click(object sender, EventArgs e)
         {
-            CreateBasicOperationButton("DIVISAO", '÷');
+            BasicOperation("DIVISAO", '÷');
         }
 
         // Botão que realiza a operação de radiciação.
@@ -278,6 +277,7 @@ namespace Calculadora
             }
             sub = true;
             press = false;
+            ultimaOperacao = "";
         }
 
         //Botão responsável pela operação de potenciação.
@@ -306,6 +306,7 @@ namespace Calculadora
             }
             sub = true;
             press = false;
+            ultimaOperacao = "";
         }
 
         // Botão responsável pela operação de fração.
@@ -344,6 +345,7 @@ namespace Calculadora
             }
             sub = true;
             press = false;
+            ultimaOperacao = "";
         }
         
         // Botão que finaliza o cálculo, realizando a última operação disponível.
@@ -356,10 +358,25 @@ namespace Calculadora
 
             // Continuar o desenvolvimento - OBS: Esta é a ação que permitirá que a última operação seja executada ao pressionar o botão.
             // Última alteração necessária para que a calculadora seja finalizada.
-            if (Lbl_calculando.Text.EndsWith('=') && signal != "!")
+            if (Lbl_calculando.Text.EndsWith('=') && signal != "!" || ultimaOperacao != "")
             {
-                ChangeOperationTo(signal);
+                if (ultimaOperacao == "")
+                {
+                    ChangeOperationTo(signal);
+                }
+                else
+                {
+                    signal = ChangeToSignal(ultimaOperacao);
+                }
                 resultado = Calcular(Lbl_resultado.Text, operationResult.ToString(), ultimaOperacao);
+                if (operationResult < 0)
+                {
+                    Lbl_calculando.Text = Lbl_resultado.Text + " " + signal + "negative(" + operationResult * (-1) + ") =";
+                }
+                else
+                {
+                    Lbl_calculando.Text = Lbl_resultado.Text + " " + signal + operationResult + " =";
+                }
                 Lbl_resultado.Text = resultado.ToString();
             }
             else if (tipoOperacao == "")
@@ -368,8 +385,8 @@ namespace Calculadora
             }
             else if (tipoOperacao == "RAIZ" || tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA")
             {
+                operationResult = GetValue(Lbl_resultado.Text);
                 SolveOperationAndTurn('=');
-                operationResult = valor;
             }
             else
             {
@@ -400,7 +417,7 @@ namespace Calculadora
         }
 
         // Função responsável por criar os botões de operações básicas.
-        public void CreateBasicOperationButton(string operation, char signal) 
+        public void BasicOperation(string operation, char signal) 
         {
             if (Lbl_calculando.Text.EndsWith('='))
             {
@@ -480,12 +497,15 @@ namespace Calculadora
             }
             sub = true;
             press = false;
+            ultimaOperacao = "";
         }
 
         //Função responsável pelos Cálculos.
         public double Calcular(string value1, string value2, string operacao)
         {
             double valor1;
+            double valor2 = GetValue(value2);
+            double resultado;
             if (value1.Contains("negative"))
             {
                 string sinal = GetSignal(Lbl_calculando.Text);
@@ -496,8 +516,6 @@ namespace Calculadora
             {
                 valor1 = GetValue(value1);
             }
-            double valor2 = GetValue(value2);
-            double resultado;
             switch (operacao)
             {
                 case "ADICAO":             
@@ -574,9 +592,9 @@ namespace Calculadora
                     if (operation == '=')
                     {
                         if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) < 0){
-                            if (press == true && GetValue(Lbl_resultado.Text) <= 0)
+                            if (press == true && GetValue(Lbl_resultado.Text) < 0)
                             {
-                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
+                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text.Replace('-',' ').Trim() + ")";
                             }
                             Lbl_calculando.Text += " " + operation;
                         }
@@ -612,11 +630,11 @@ namespace Calculadora
                     }
                     if (operation == '=')
                     {
-                        if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) <= 0)
+                        if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) < 0)
                         {
-                            if (press == true && GetValue(Lbl_resultado.Text) <= 0)
+                            if (press == true && GetValue(Lbl_resultado.Text) < 0)
                             {
-                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
+                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text.Replace('-', ' ').Trim() + ")";
                             }
                             Lbl_calculando.Text += " " + operation;
                         }
@@ -652,11 +670,11 @@ namespace Calculadora
                     }
                     if (operation == '=')
                     {
-                        if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) <= 0)
+                        if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) < 0)
                         {
-                            if (press == true && GetValue(Lbl_resultado.Text) <= 0)
+                            if (press == true && GetValue(Lbl_resultado.Text) < 0)
                             {
-                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
+                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text.Replace('-', ' ').Trim() + ")";
                             }
                             Lbl_calculando.Text += " " + operation;
                         }
@@ -692,11 +710,11 @@ namespace Calculadora
                     }
                     if (operation == '=')
                     {
-                        if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) <= 0)
+                        if (substring2.EndsWith(')') || GetValue(Lbl_resultado.Text) < 0)
                         {
-                            if (press == true && GetValue(Lbl_resultado.Text) <= 0)
+                            if (press == true && GetValue(Lbl_resultado.Text) < 0)
                             {
-                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
+                                Lbl_calculando.Text += "negative(" + Lbl_resultado.Text.Replace('-', ' ').Trim() + ")";
                             }
                             Lbl_calculando.Text += " " + operation;
                         }
@@ -745,6 +763,23 @@ namespace Calculadora
                 default:
                     ultimaOperacao = "";
                     break;
+            }
+        }
+        
+        public string ChangeToSignal(string operation)
+        {
+            switch (operation)
+            {
+                case "ADICAO":
+                    return "+ ";
+                case "SUBTRACAO":
+                    return "- ";
+                case "MULTIPLICACAO":
+                    return "x ";
+                case "DIVISAO":
+                    return "÷ ";
+                default:
+                    return "!";
             }
         }
 
@@ -815,7 +850,6 @@ namespace Calculadora
                 if (Lbl_calculando.Text.EndsWith("="))
                 {
                     Lbl_calculando.Text = " ";
-                    ultimaOperacao = "";
                 }
                 Lbl_resultado.Text = num.ToString();
                 sub = false;
