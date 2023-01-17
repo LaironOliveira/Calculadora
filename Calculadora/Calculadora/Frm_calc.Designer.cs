@@ -379,7 +379,6 @@
             this.Name = "Frm_calc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Calculadora";
-            this.Load += new System.EventHandler(this.Frm_calc_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
