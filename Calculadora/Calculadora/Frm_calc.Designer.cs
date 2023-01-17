@@ -61,8 +61,9 @@
             // 
             this.Lbl_resultado.AutoSize = true;
             this.Lbl_resultado.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Lbl_resultado.Location = new System.Drawing.Point(11, 75);
+            this.Lbl_resultado.Location = new System.Drawing.Point(11, 72);
             this.Lbl_resultado.Name = "Lbl_resultado";
+            this.Lbl_resultado.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Lbl_resultado.Size = new System.Drawing.Size(42, 50);
             this.Lbl_resultado.TabIndex = 0;
             this.Lbl_resultado.Text = "0";
@@ -117,6 +118,7 @@
             this.Lbl_calculando.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Lbl_calculando.Location = new System.Drawing.Point(11, 46);
             this.Lbl_calculando.Name = "Lbl_calculando";
+            this.Lbl_calculando.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Lbl_calculando.Size = new System.Drawing.Size(12, 17);
             this.Lbl_calculando.TabIndex = 0;
             this.Lbl_calculando.Text = " ";
@@ -377,6 +379,7 @@
             this.Name = "Frm_calc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Calculadora";
+            this.Load += new System.EventHandler(this.Frm_calc_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
