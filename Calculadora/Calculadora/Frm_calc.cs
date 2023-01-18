@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Calculadora
@@ -77,62 +78,57 @@ namespace Calculadora
         // Botão de inversão de sinal dos números digitados.
         private void Btn_inverte_sinal_Click(object sender, EventArgs e)
         {
-            int index;
-            string substituta;
+            string signal = GetSignal(Lbl_calculando.Text);
+            string substring1 = GetFirstHalf(Lbl_calculando.Text, signal);
+            string substring2 = GetSecondHalf(Lbl_calculando.Text, signal);
             double num = GetValue(Lbl_resultado.Text);
-            string operacao = GetSignal(Lbl_calculando.Text);
             if (num != 0)
             {
-                if (Lbl_calculando.Text.Contains("negative") == false)
+                if (Lbl_calculando.Text.EndsWith('='))
                 {
-                    if (Lbl_calculando.Text.Contains(operacao) && Lbl_calculando.Text.EndsWith(')'))
-                    {
-                        index = Lbl_calculando.Text.IndexOf(operacao) - 1;
-                        string substring = Lbl_calculando.Text.Remove(index);
-                        index = Lbl_calculando.Text.IndexOf(operacao) + 2;
-                        substituta = Lbl_calculando.Text.Substring(index);
-                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(index);
-                        Lbl_calculando.Text += "negative(" + substituta + ")";
-                        if (substring.EndsWith(')') == false)
-                        {
-                            valor *= (-1);
-                        }
-                    }
-                    else if (Lbl_calculando.Text.Contains(operacao) == false && Lbl_calculando.Text.Contains(')'))
+                    Lbl_calculando.Text = " ";
+                    num *= (-1);
+                    Lbl_resultado.Text = num.ToString();
+                }
+                else if (Lbl_calculando.Text.Contains("negative") == false)
+                {
+                    if (Lbl_calculando.Text.Contains(signal) == false && substring1.EndsWith(')'))
                     {
                         Lbl_calculando.Text = "negative(" + Lbl_calculando.Text + ")";
                         valor *= (-1);
                     }
-                    else if (Lbl_calculando.Text.Contains(operacao) && press == false)
+                    else if (Lbl_calculando.Text.Contains(signal) && substring2.EndsWith(')'))
+                    {
+                        if (substring1.EndsWith(')') == false)
+                        {
+                            valor *= (-1);
+                        }
+                        Lbl_calculando.Text = substring1 + " " + signal + "negative(" + substring2 + ")";
+                    }
+                    else if (Lbl_calculando.Text.Contains(signal) && press == false)
                     {
                         if (num > 0)
                         {
-                            index = Lbl_calculando.Text.IndexOf(operacao);
-                            Lbl_calculando.Text = Lbl_calculando.Text.Remove(index + 2);
-                            Lbl_calculando.Text += "negative(" + Lbl_resultado.Text + ")";
+                            Lbl_calculando.Text = substring1 + " " + signal + "negative(" + Lbl_resultado.Text + ")";
                         }
                         else
                         {
-                            Lbl_calculando.Text += Lbl_resultado.Text.Replace('-', ' ').Trim();
+                            Lbl_calculando.Text = substring1 + " "  + signal;
                         }
                     }
                 }
                 else if (Lbl_calculando.Text.Contains("negative"))
                 {
-                    if (Lbl_calculando.Text.Contains(operacao) == false)
+                    if (Lbl_calculando.Text.Contains(signal) == false)
                     {
-                        Lbl_calculando.Text = Lbl_calculando.Text.Substring(9);
-                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(Lbl_calculando.Text.Length - 1);
+                        Lbl_calculando.Text = RemoveNegative(substring1);
                         valor *= (-1);
                     }
-                    else if (Lbl_calculando.Text.IndexOf(operacao) + 2 < Lbl_calculando.Text.Length)
+                    else if (substring2.Contains("negative"))
                     {
-                        index = Lbl_calculando.Text.IndexOf(operacao) + 11;
-                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(Lbl_calculando.Text.Length - 1);
-                        substituta = Lbl_calculando.Text.Substring(index);
-                        Lbl_calculando.Text = Lbl_calculando.Text.Remove(Lbl_calculando.Text.IndexOf(operacao) + 2);
-                        Lbl_calculando.Text += substituta;
-                        if (Lbl_calculando.Text.EndsWith(')'))
+                        substring2 = RemoveNegative(substring2);
+                        Lbl_calculando.Text = substring1 + " " + signal + substring2;
+                        if (substring1.EndsWith(')') == false && substring2.EndsWith(')'))
                         {
                             valor *= (-1);
                         }
@@ -200,7 +196,8 @@ namespace Calculadora
             double valor1;
             double valor2;
             double resultado;
-            if (Lbl_calculando.Text != " " && tipoOperacao != "FRACAO" && tipoOperacao != "RAIZ" && tipoOperacao != "POTENCIA")
+            string signal = GetSignal(Lbl_calculando.Text);
+            if (Lbl_calculando.Text != " " && signal != "!")
             {
                 if (Lbl_calculando.Text.EndsWith("="))
                 {
@@ -208,10 +205,20 @@ namespace Calculadora
                     resultado = valor1 * (valor1 / 100);
                     Lbl_calculando.Text = resultado.ToString();
                     Lbl_resultado.Text = resultado.ToString();
+                    ChangeOperationTo(signal, false);
                 }
                 else
                 {
-                    valor1 = GetValue(Lbl_calculando.Text);
+                    string substring = GetFirstHalf(Lbl_calculando.Text, signal);
+                    if (substring.EndsWith(')'))
+                    {
+                        valor1 = valor;
+                        Lbl_resultado.Text = substring + signal;
+                    }
+                    else
+                    {
+                        valor1 = GetValue(Lbl_calculando.Text);
+                    }
                     valor2 = GetValue(Lbl_resultado.Text);
                     resultado = valor1 * (valor2 / 100);
                     Lbl_resultado.Text = resultado.ToString();
@@ -223,6 +230,7 @@ namespace Calculadora
                 Lbl_calculando.Text = " ";
                 Lbl_resultado.Text = "0";
                 tipoOperacao = "";
+                ultimaOperacao = "";
             }
             sub = true;
         }
@@ -275,6 +283,10 @@ namespace Calculadora
             {
                 valor = resultado;
             }
+            else
+            {
+                valor = GetValue(Lbl_resultado.Text);
+            }
             sub = true;
             press = false;
             ultimaOperacao = "";
@@ -303,6 +315,10 @@ namespace Calculadora
             if (signal == "!")
             {
                 valor = resultado;
+            }
+            else
+            {
+                valor = GetValue(Lbl_resultado.Text);
             }
             sub = true;
             press = false;
@@ -342,6 +358,10 @@ namespace Calculadora
                 {
                     valor = resultado;
                 }
+                else
+                {
+                    valor = GetValue(Lbl_resultado.Text);
+                }
             }
             sub = true;
             press = false;
@@ -362,7 +382,7 @@ namespace Calculadora
             {
                 if (ultimaOperacao == "")
                 {
-                    ChangeOperationTo(signal);
+                    ChangeOperationTo(signal, true);
                 }
                 else
                 {
@@ -390,15 +410,14 @@ namespace Calculadora
             }
             else
             {
-                index = Lbl_calculando.Text.IndexOf(signal) + 2;
-                substring = Lbl_calculando.Text.Substring(index);
-                if (Lbl_resultado.Text.StartsWith("-") && substring.StartsWith("negative") == false)
+                substring = GetSecondHalf(Lbl_calculando.Text, signal);
+                if (Lbl_resultado.Text.StartsWith("-") && substring.Contains("negative") == false)
                 {
                     Lbl_calculando.Text += "negative(" + Lbl_resultado.Text.Replace('-', ' ').Trim() + ") =";
                 }
                 else
                 {
-                    if (substring.StartsWith("negative") || substring != "")
+                    if (substring.Contains("negative") || substring != "")
                     {
                         Lbl_calculando.Text += " =";
                     }
@@ -560,29 +579,24 @@ namespace Calculadora
         // Utilizado quando tratamos das operações de Radiciação, Potenciação e Fração, pois necessitam de um tratamento particular.
         public void SolveOperationAndTurn(char operation)
         {
-            string lastOperation = GetSignal(Lbl_calculando.Text);
-            double resultado;
             int index;
-            // Recebe o valor, antes do sinal da operação.
+            double resultado;
             string substring1;
-            // Receb o valor depois do sinal da operação.
             string substring2;
+            string lastOperation = GetSignal(Lbl_calculando.Text);
             switch (lastOperation)
             {
                 case "+ ":
-                    index = Lbl_calculando.Text.IndexOf(lastOperation);
-                    substring1 = Lbl_calculando.Text.Remove(index - 1); 
-                    substring2 = Lbl_calculando.Text.Substring(index);
+                    substring1 = GetFirstHalf(Lbl_calculando.Text, lastOperation);
+                    substring2 = GetSecondHalf(Lbl_calculando.Text, lastOperation);
                     if (substring2.Contains("negative"))
                     {
-                        substring2 = Lbl_calculando.Text.Substring(index + 11);
-                        substring2 = substring2.Remove(substring2.Length - 1);
+                        substring2 = RemoveNegative(substring2);
                     }
                     if (substring1.EndsWith(')') == false && substring2.EndsWith(')'))
                     {
                         index = Lbl_calculando.Text.IndexOf("+ ");
                         string numeroASerAcrescido = Lbl_calculando.Text.Remove(index);
-                        
                         resultado = Calcular(numeroASerAcrescido, valor.ToString(), "ADICAO");
                     }
                     else
@@ -610,13 +624,11 @@ namespace Calculadora
                     Lbl_resultado.Text = resultado.ToString();
                     break;
                 case "- ":
-                    index = Lbl_calculando.Text.IndexOf(lastOperation);
-                    substring1 = Lbl_calculando.Text.Remove(index - 1);
-                    substring2 = Lbl_calculando.Text.Substring(index);
+                    substring1 = GetFirstHalf(Lbl_calculando.Text, lastOperation);
+                    substring2 = GetSecondHalf(Lbl_calculando.Text, lastOperation);
                     if (substring2.Contains("negative"))
                     {
-                        substring2 = Lbl_calculando.Text.Substring(index + 11);
-                        substring2 = substring2.Remove(substring2.Length - 1);
+                        substring2 = RemoveNegative(substring2);
                     }
                     if (substring1.EndsWith(')') == false && substring2.EndsWith(')') == true)
                     {
@@ -650,13 +662,11 @@ namespace Calculadora
                     Lbl_resultado.Text = resultado.ToString();
                     break;
                 case "x ":
-                    index = Lbl_calculando.Text.IndexOf(lastOperation);
-                    substring1 = Lbl_calculando.Text.Remove(index - 1);
-                    substring2 = Lbl_calculando.Text.Substring(index);
+                    substring1 = GetFirstHalf(Lbl_calculando.Text, lastOperation);
+                    substring2 = GetSecondHalf(Lbl_calculando.Text, lastOperation);
                     if (substring2.Contains("negative"))
                     {
-                        substring2 = Lbl_calculando.Text.Substring(index + 11);
-                        substring2 = substring2.Remove(substring2.Length - 1);
+                        substring2 = RemoveNegative(substring2);
                     }
                     if (substring1.EndsWith(')') == false && substring2.EndsWith(')') == true)
                     {
@@ -690,13 +700,11 @@ namespace Calculadora
                     Lbl_resultado.Text = resultado.ToString();
                     break;
                 case "÷ ":
-                    index = Lbl_calculando.Text.IndexOf(lastOperation);
-                    substring1 = Lbl_calculando.Text.Remove(index - 1);
-                    substring2 = Lbl_calculando.Text.Substring(index);
+                    substring1 = GetFirstHalf(Lbl_calculando.Text, lastOperation);
+                    substring2 = GetSecondHalf(Lbl_calculando.Text, lastOperation);
                     if (substring2.Contains("negative"))
                     {
-                        substring2 = Lbl_calculando.Text.Substring(index + 11);
-                        substring2 = substring2.Remove(substring2.Length - 1);
+                        substring2 = RemoveNegative(substring2);
                     }
                     if (substring1.EndsWith(')') == false && substring2.EndsWith(')') == true)
                     {
@@ -744,25 +752,49 @@ namespace Calculadora
             Lbl_calculando.Text = Lbl_calculando.Text.Replace('-', operation).Replace('x', operation).Replace('÷', operation).Replace('+', operation);
         }
 
-        public void ChangeOperationTo(string operation)
+        public void ChangeOperationTo(string operation, bool final)
         {
-            switch (operation)
+            if (final == true)
             {
-                case "+ ":
-                    ultimaOperacao = "ADICAO";
-                    break;
-                case "- ":
-                    ultimaOperacao = "SUBTRACAO";
-                    break;
-                case "x ":
-                    ultimaOperacao = "MULTIPLICACAO";
-                    break;
-                case "÷ ":
-                    ultimaOperacao = "DIVISAO";
-                    break;
-                default:
-                    ultimaOperacao = "";
-                    break;
+                switch (operation)
+                {
+                    case "+ ":
+                        ultimaOperacao = "ADICAO";
+                        break;
+                    case "- ":
+                        ultimaOperacao = "SUBTRACAO";
+                        break;
+                    case "x ":
+                        ultimaOperacao = "MULTIPLICACAO";
+                        break;
+                    case "÷ ":
+                        ultimaOperacao = "DIVISAO";
+                        break;
+                    default:
+                        ultimaOperacao = "";
+                        break;
+                }
+            }
+            else
+            {
+                switch (operation)
+                {
+                    case "+ ":
+                        tipoOperacao = "ADICAO";
+                        break;
+                    case "- ":
+                        tipoOperacao = "SUBTRACAO";
+                        break;
+                    case "x ":
+                        tipoOperacao = "MULTIPLICACAO";
+                        break;
+                    case "÷ ":
+                        tipoOperacao = "DIVISAO";
+                        break;
+                    default:
+                        tipoOperacao = "";
+                        break;
+                }
             }
         }
         
@@ -791,6 +823,40 @@ namespace Calculadora
             Match valorlimpo = Regex.Match(valorASerLimpo, pattern);
             resultado = double.Parse(valorlimpo.Value);
             return resultado;
+        }
+
+        public string RemoveNegative(string text)
+        {
+            string resultado;
+            resultado = text.Substring(9);
+            resultado = resultado.Remove(resultado.Length - 1);
+            return resultado;
+        }
+
+        public string GetFirstHalf(string text, string signal) 
+        {
+            int index = text.Length;
+            string resultado;
+            if (signal != "!")
+            {
+                index = text.IndexOf(signal) - 1;
+            }
+            resultado = text.Remove(index);
+            return resultado;
+        }
+
+        public string GetSecondHalf(string text, string signal)
+        {
+            if (signal != "!")
+            {
+                int index = text.IndexOf(signal) + 2;
+                string resultado = text.Substring(index);
+                return resultado;
+            }
+            else
+            {
+                return "";
+            }
         }
 
         // Função responsável por captar o símbolo da operação.
