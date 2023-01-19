@@ -152,7 +152,14 @@ namespace Calculadora
         // Botão que adiciona uma vírgula (Funciona apenas se o Windows utilizado for da versão Pt-BR ABNT2).
         private void Btn_virgula_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text.Contains(',') == false)
+            if (Lbl_calculando.Text.EndsWith('='))
+            {
+                string signal = GetSignal(Lbl_calculando.Text);
+                ultimaOperacao = ChangeToOperation(signal);
+                Lbl_calculando.Text = " ";
+                Lbl_resultado.Text = "0,";
+            }
+            else if (Lbl_resultado.Text.Contains(',') == false)
             {
                 Lbl_resultado.Text += ",";
             }
@@ -399,6 +406,11 @@ namespace Calculadora
                 else
                 {
                     signal = ChangeToSignal(ultimaOperacao);
+                }
+                if (Lbl_resultado.Text.EndsWith(','))
+                {
+                    int index = Lbl_resultado.Text.Length - 1;
+                    Lbl_resultado.Text = Lbl_resultado.Text.Remove(index);
                 }
                 resultado = Calcular(Lbl_resultado.Text, operationResult.ToString(), ultimaOperacao);
                 if (operationResult < 0)
