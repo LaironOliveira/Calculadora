@@ -85,7 +85,12 @@ namespace Calculadora
             double num = GetValue(Lbl_resultado.Text);
             if (num != 0)
             {
-                if (Lbl_calculando.Text.EndsWith('='))
+                if (Lbl_calculando.Text == Lbl_resultado.Text)
+                {
+                    double resultado = num * (-1);
+                    Lbl_calculando.Text = resultado.ToString();
+                }
+                else if (Lbl_calculando.Text.EndsWith('='))
                 {
                     Lbl_calculando.Text = " ";
                     num *= (-1);
