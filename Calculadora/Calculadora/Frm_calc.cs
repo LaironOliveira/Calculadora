@@ -303,35 +303,47 @@ namespace Calculadora
         // Botão que realiza a operação de radiciação.
         private void Btn_raiz_quadrada_Click(object sender, EventArgs e)
         {
-            string signal = GetSignal(Lbl_calculando.Text);
-            double resultado;
-            if(tipoOperacao == "RAIZ" && signal == "!" || tipoOperacao == "" || Lbl_calculando.Text == " ")
+            if (Lbl_resultado.Text.StartsWith('-'))
             {
-                Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
-            }
-            else if ((tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA") && signal == "!")
-            {
-                Lbl_calculando.Text = "sqrt(" + Lbl_calculando.Text + ")";
+                MessageBox.Show("Entrada inválida", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Lbl_calculando.Text = " ";
+                Lbl_resultado.Text = "0";
+                tipoOperacao = "";
+                ultimaOperacao = "";
             }
             else
             {
-                Lbl_calculando.Text += "sqrt(" + Lbl_resultado.Text + ")";
+                string signal = GetSignal(Lbl_calculando.Text);
+                double resultado;
+                if(tipoOperacao == "RAIZ" && signal == "!" || tipoOperacao == "" || Lbl_calculando.Text == " ")
+                {
+                    Lbl_calculando.Text = "sqrt(" + Lbl_resultado.Text + ")";
+                }
+                else if ((tipoOperacao == "FRACAO" || tipoOperacao == "POTENCIA") && signal == "!")
+                {
+                    Lbl_calculando.Text = "sqrt(" + Lbl_calculando.Text + ")";
+                }
+                else
+                {
+                    Lbl_calculando.Text += "sqrt(" + Lbl_resultado.Text + ")";
+                }
+                tipoOperacao = "RAIZ";
+                resultado = Calcular(Lbl_resultado.Text, tipoOperacao);
+                Lbl_resultado.Text = resultado.ToString();
+                string substring = GetSecondHalf(Lbl_calculando.Text, signal);
+                if (substring.Contains("negative"))
+                {
+                    substring = RemoveNegative(substring);
+                }
+                if (substring == "" || substring.EndsWith(')') == false)
+                {
+                    valor = resultado;
+                }
+                sub = true;
+                press = false;
+                ultimaOperacao = "";
             }
-            tipoOperacao = "RAIZ";
-            resultado = Calcular(Lbl_resultado.Text, tipoOperacao);
-            Lbl_resultado.Text = resultado.ToString();
-            string substring = GetSecondHalf(Lbl_calculando.Text, signal);
-            if (substring.Contains("negative"))
-            {
-                substring = RemoveNegative(substring);
-            }
-            if (substring == "" || substring.EndsWith(')') == false)
-            {
-                valor = resultado;
-            }
-            sub = true;
-            press = false;
-            ultimaOperacao = "";
+
         }
 
         //Botão responsável pela operação de potenciação.
@@ -391,6 +403,7 @@ namespace Calculadora
                 Lbl_calculando.Text = " ";
                 Lbl_resultado.Text = "0";
                 tipoOperacao = "";
+                ultimaOperacao = "";
             }
             else
             {
@@ -520,6 +533,8 @@ namespace Calculadora
                         MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Lbl_calculando.Text = " ";
                         Lbl_resultado.Text = "0";
+                        tipoOperacao = "";
+                        ultimaOperacao = "";
                     }
                     else
                     {
@@ -546,6 +561,8 @@ namespace Calculadora
                             MessageBox.Show("Não é possível dividir por 0", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             Lbl_calculando.Text = " ";
                             Lbl_resultado.Text = "0";
+                            tipoOperacao = "";
+                            ultimaOperacao = "";
                         }
                         else
                         {
