@@ -499,7 +499,7 @@ namespace Calculadora
         // Função responsável por criar os botões de operações básicas.
         public void BasicOperation(string operation, char signal) 
         {
-            if (Lbl_calculando.Text.EndsWith('='))
+            if (Lbl_calculando.Text.EndsWith('=') || Lbl_calculando.Text == Lbl_resultado.Text)
             {
                 Lbl_calculando.Text = Lbl_resultado.Text + " " + signal + " ";
             }
