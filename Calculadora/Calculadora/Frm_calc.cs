@@ -208,13 +208,14 @@ namespace Calculadora
                 {
                     substring = GetSecondHalf(Lbl_calculando.Text, signal);
                 }
-                if (substring.Contains("negative"))
-                {
-                    substring = RemoveNegative(substring);
-                }
                 if (substring.EndsWith(')') == false)
                 {
-                    if (Lbl_resultado.Text.Length > 1)
+                    substring = Lbl_resultado.Text;
+                    if (substring.Contains('-'))
+                    {
+                        substring = substring.Replace('-', ' ').Trim();
+                    }
+                    if (substring.Length > 1)
                     {
                         Lbl_resultado.Text = Lbl_resultado.Text.Remove((Lbl_resultado.Text.Length - 1), 1);
                     }
@@ -223,10 +224,7 @@ namespace Calculadora
                         Lbl_resultado.Text = "0";
                     }
                 }
-
             }
-            
-
         }
 
         // Botão responsável pela operação de porcentagem.
