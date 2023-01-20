@@ -171,6 +171,7 @@ namespace Calculadora
             Lbl_resultado.Text = "0";
             Lbl_calculando.Text = " ";
             tipoOperacao = "";
+            ultimaOperacao = "";
         }
 
         // Botão responsável por limpar apenas os números que são digitados.
@@ -193,14 +194,39 @@ namespace Calculadora
         // Botão responsável por apagar os números digitados de maneira unitária.
         private void Btn_limpar_unidade_Click(object sender, EventArgs e)
         {
-            if (Lbl_resultado.Text.Length > 1)
+            if (Lbl_calculando.Text.EndsWith('='))
             {
-                Lbl_resultado.Text = Lbl_resultado.Text.Remove((Lbl_resultado.Text.Length - 1), 1);
+                ultimaOperacao = GetSignal(Lbl_calculando.Text);
+                ultimaOperacao = ChangeToOperation(ultimaOperacao);
+                Lbl_calculando.Text = " ";
             }
             else
             {
-                Lbl_resultado.Text = "0";
+                string signal = GetSignal(Lbl_calculando.Text);
+                string substring = GetFirstHalf(Lbl_calculando.Text, signal);
+                if (Lbl_calculando.Text.Contains(signal))
+                {
+                    substring = GetSecondHalf(Lbl_calculando.Text, signal);
+                }
+                if (substring.Contains("negative"))
+                {
+                    substring = RemoveNegative(substring);
+                }
+                if (substring.EndsWith(')') == false)
+                {
+                    if (Lbl_resultado.Text.Length > 1)
+                    {
+                        Lbl_resultado.Text = Lbl_resultado.Text.Remove((Lbl_resultado.Text.Length - 1), 1);
+                    }
+                    else
+                    {
+                        Lbl_resultado.Text = "0";
+                    }
+                }
+
             }
+            
+
         }
 
         // Botão responsável pela operação de porcentagem.
@@ -214,14 +240,14 @@ namespace Calculadora
             {
                 if (Lbl_calculando.Text == Lbl_resultado.Text)
                 {
-                    resultado = percent * (valor2 / 100);
+                    resultado = (percent * valor2) / 100;
                     Lbl_calculando.Text = resultado.ToString();
                     Lbl_resultado.Text = resultado.ToString();
                 }
                 else if (Lbl_calculando.Text.EndsWith("="))
                 {
                     percent = valor2;
-                    resultado = valor2 * (valor2 / 100);
+                    resultado = (valor2 * valor2) / 100;
                     Lbl_calculando.Text = resultado.ToString();
                     Lbl_resultado.Text = resultado.ToString();
                     ultimaOperacao = ChangeToOperation(signal);
@@ -237,7 +263,7 @@ namespace Calculadora
                     {
                         valor1 = valor;
                     }
-                    resultado = valor1 * (valor2 / 100);
+                    resultado = (valor1 * valor2) / 100;
                     Lbl_resultado.Text = resultado.ToString();
                     press = true;
                 }
